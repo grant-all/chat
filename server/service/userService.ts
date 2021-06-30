@@ -10,7 +10,7 @@ import ApiError from "../exceptions/apiError";
 import tokenModel from "../models/tokenModel";
 
 class UserService {
-    async registration(name, email, password) {
+    async registration(name: string, email: string, password: string) {
         const candidate = await UserModel.findOne({email})
 
         if (candidate) {
