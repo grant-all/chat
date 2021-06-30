@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect} from 'react';
 import './App.css';
+import useRoute from "./useRoute";
+import useActions from "./hooks/useActions";
+import useTypedSelector from "./hooks/useTypedSelector";
+import {useHistory} from "react-router-dom";
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const {fetchCheckAuthUser} = useActions()
+    const isAuth = useTypedSelector<boolean>(({user}) => user.isAuth)
+    const isLoading = useTypedSelector<boolean>(({user}) => user.loading)
+    const routes = useRoute(isAuth)
+
+    useEffect(() => {
+        if(localStorage.getItem("accessToken"))
+            fetchCheckAuthUser()
+    }, [])
+
+
+
+    return (
+        <>
+            {isLoading ? <h1>"Загрузка!!!"</h1> : routes}
+        </>
+    );
 }
 
 export default App;
