@@ -10,6 +10,6 @@ const store = createStore(
         applyMiddleware(thunk)
     )
 );
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, AnyAction>
+export type AppThunk<Action extends AnyAction, ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action>
 
 export default store

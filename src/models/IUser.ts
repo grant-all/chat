@@ -4,5 +4,6 @@ export interface IUser {
     name: string,
     isActivated: boolean,
     avatar: string,
-    accessToken: string
+    accessToken?: string,
+
 }

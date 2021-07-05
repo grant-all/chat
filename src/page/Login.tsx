@@ -70,7 +70,8 @@ const Login = () => {
         }))
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = (e: SyntheticEvent) => {
+        e.preventDefault()
         fetchLoginUser(formValue)
     }
 

@@ -21,7 +21,7 @@ class UserService {
         const hashPassword = await bcrypt.hash(password, 3)
 
         const user = await UserModel.create({name, email, password: hashPassword, activationLink});
-        await MailService.sendActivationMail(email, `${process.env.API_URL}/api/activation/` + activationLink)
+        await MailService.sendActivationMail(email, `${process.env.API_URL}/users/activation/` + activationLink)
 
         const userDto = new UserDto(user)
         const tokens = await tokenService.generateTokens({...userDto})
@@ -60,9 +60,7 @@ class UserService {
         const userDto = new UserDto(user)
         const tokens = await tokenService.generateTokens({...userDto})
         await tokenService.saveToken(userDto.id, tokens.refreshToken)
-
-        return {tokens, user: userDto}
-
+        return {...tokens, user: userDto}
     }
 
     async logout(refreshToken: string) {
@@ -81,13 +79,12 @@ class UserService {
             throw ApiError.UnauthoraizedError()
         }
 
-        console.log("Hello")
         const user = await UserModel.findById(userData.id)
         const userDto = new UserDto(user)
         const tokens = await tokenService.generateTokens({...userDto})
         await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
-        return {tokens, user: userDto}
+        return {...tokens, user: userDto}
     }
 }
 

@@ -1,17 +1,38 @@
 import userModel from "../models/userModel";
-import dialogModel from "../models/dialogModel";
+import dialogModel, {IDialog} from "../models/dialogModel";
 import messageModel from "../models/messageModel";
 
+
 class DialogService {
-    async create(dataDialog: Object, text: string) {
-        const candidate = await userModel.findOne({author: dataDialog})
+    async getDialogs(userId: string) {
+        console.log(userId)
+        const dialogs = await dialogModel
+            .find()
+            .or([{author: userId}, {partner: userId}])
+            .populate(["author", "partner"])
+            .populate({
+                path: "lastMessage",
+                populate: {
+                    "path": "user"
+                }
+            })
+
+        if(!dialogs) {
+            throw new Error("Диалоги не найдены")
+        }
+
+        return dialogs
+    }
+
+    async create(dataDialog, text: string) {
+        const candidate = await dialogModel.findOne({author: dataDialog.author, partner: dataDialog.partner})
 
         if(candidate) {
             throw new Error("Такой диалог уже есть")
         }
 
-        const dialog = await dialogModel.create(dataDialog)
-
+        const dialog = await dialogModel.create({...dataDialog})
+        console.log("Hello")
         const message = await messageModel.create({
             text,
             user: dialog.author,
@@ -19,9 +40,21 @@ class DialogService {
         })
 
         dialog.lastMessage = message._id
-
+        console.log("Bye")
         return dialog.save()
     }
+
+    async delete(id: string) {
+        const dialog = await dialogModel.findByIdAndDelete(id)
+
+        if(!dialog) {
+            throw new Error("Диалог не найден")
+        }
+
+        return dialog
+    }
+
+
 }
 
 export default new DialogService()

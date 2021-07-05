@@ -7,7 +7,7 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use(config => {
-    config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`
+    config.headers.Authorization = `Bearer ${localStorage.getItem("accessToken")}`
     return config
 })
 
@@ -18,7 +18,8 @@ instance.interceptors.response.use(config => {
     if(error.response.status === 401 && !error?.config._isRetry) {
         originalRequest._isRetry = true
         try {
-            const response = await axios.get("/api/refresh", {withCredentials: true})
+            const response = await axios.get("/users/refresh", {withCredentials: true})
+            console.log(localStorage.getItem("accessToken"))
             localStorage.setItem("token", response.data.accessToken)
             return instance.request(originalRequest)
         } catch (e) {

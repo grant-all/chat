@@ -1,10 +1,13 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Box, IconButton, makeStyles, TextField, Typography} from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
 import PeopleIcon from '@material-ui/icons/People';
 import SearchIcon from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Dialogs from "./Dialogs";
+import useActions from "../hooks/useActions";
+import useTypedSelector from "../hooks/useTypedSelector";
+import {IDialog} from "../models/IDialog";
 
 const useStyle = makeStyles(theme => ({
     root: {

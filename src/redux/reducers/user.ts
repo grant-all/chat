@@ -9,8 +9,6 @@ const initialState : UserState = {
 
 export const userReducer = (state = initialState, action: UserActions) : UserState => {
     switch (action.type) {
-        case UserActionTypes.FETCH_USER_LOADING:
-            return {...state, loading: action.payload}
         case UserActionTypes.FETCH_USER_REGISTRATION:
             return {user: action.payload, loading: false, isAuth: true}
         case UserActionTypes.FETCH_USER_LOGIN:
