@@ -4,11 +4,14 @@ import Registration from "./page/registration/contanier/Registration";
 import Login from "./page/Login";
 import Home from "./page/Home/Home";
 
-const useRoute = (isAuth: boolean) => {
+const useRoute = (isAuth: boolean, initialized: boolean) => {
+    if(!initialized)
+        return <h1>"Загрузка!!!"</h1>
+
     if (isAuth)
         return (
             <Switch>
-                <Route path={"/"} exact>
+                <Route path={"/"}>
                     <Home />
                 </Route>
                 <Redirect to={"/"} />

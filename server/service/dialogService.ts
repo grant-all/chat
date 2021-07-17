@@ -1,11 +1,9 @@
-import userModel from "../models/userModel";
-import dialogModel, {IDialog} from "../models/dialogModel";
+import dialogModel from "../models/dialogModel";
 import messageModel from "../models/messageModel";
 
 
 class DialogService {
     async getDialogs(userId: string) {
-        console.log(userId)
         const dialogs = await dialogModel
             .find()
             .or([{author: userId}, {partner: userId}])
@@ -20,7 +18,6 @@ class DialogService {
         if(!dialogs) {
             throw new Error("Диалоги не найдены")
         }
-
         return dialogs
     }
 
@@ -32,7 +29,7 @@ class DialogService {
         }
 
         const dialog = await dialogModel.create({...dataDialog})
-        console.log("Hello")
+
         const message = await messageModel.create({
             text,
             user: dialog.author,
@@ -40,7 +37,7 @@ class DialogService {
         })
 
         dialog.lastMessage = message._id
-        console.log("Bye")
+
         return dialog.save()
     }
 

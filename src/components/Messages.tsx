@@ -1,58 +1,57 @@
-import React from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Box, Container, IconButton, makeStyles, TextField} from "@material-ui/core";
-import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
-import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
-import MicIcon from '@material-ui/icons/Mic';
-import SendIcon from '@material-ui/icons/Send';
+
 
 import Message from './Message'
+import {IMessage} from "../models/IMessage";
+import {IUser} from "../models/IUser";
+import useActions from "../hooks/useActions";
+import useTypedSelector from "../hooks/useTypedSelector";
+import socket from "../socket";
 
 const useStyle = makeStyles(theme => ({
     root: {
-        padding: "29px 35px 37px 35px"
+        height: "100%",
+        padding: "29px 35px 37px 35px",
+        overflowY: "auto"
     },
     messages: {
         marginBottom: "30px"
-    },
-    inputBox: {
-        display: "flex",
-        alignItems: "flex-end"
-    },
-    textField:{
-        marginRight: "5px"
     }
 }))
 
-const Messages = () => {
+interface MessagesProps {
+    user: IUser,
+    items: IMessage[],
+    isTyping: boolean,
+    partner: IUser,
+    handleDeleteMessage: (messageId: string) => void
+}
+
+const Messages: FC<MessagesProps> = ({user, items,  partner, isTyping, handleDeleteMessage}) => {
     const classes = useStyle()
 
     return (
         <Box className={classes.root}>
             <Container>
                 <Box className={classes.messages}>
-                    <Message/>
-                    <Message isMe/>
-                </Box>
-                <Box className={classes.inputBox}>
-                    <IconButton>
-                        <SentimentVerySatisfiedIcon fontSize={"large"}/>
-                    </IconButton>
-                    <TextField
-                        className={classes.textField}
-                        fullWidth
-                        multiline
-                        label={"Введите текст сообщения…"}
-                        variant="outlined"
-                    />
-                    <IconButton>
-                        <PhotoCameraIcon fontSize={"large"}/>
-                    </IconButton>
-                    <IconButton>
-                        <MicIcon fontSize={"large"}/>
-                    </IconButton>
-                    <IconButton>
-                        <SendIcon fontSize={"large"}/>
-                    </IconButton>
+                    {items?.map((messageObj: IMessage) => (
+                        <Message
+                            id={messageObj._id}
+                            isMe={user._id === messageObj.user._id}
+                            text={messageObj.text}
+                            date={messageObj.createdAt}
+                            read={messageObj.read}
+                            avatar={user._id === messageObj.user._id ? user.avatar :partner.avatar}
+                            handleDeleteMessage={handleDeleteMessage}
+                            attachments={messageObj.attachments}
+                        />
+                    ))}
+                    {isTyping && <Message
+                        isTyping={isTyping}
+                        isMe={false}
+                        avatar={user.avatar}
+                    />}
                 </Box>
             </Container>
         </Box>

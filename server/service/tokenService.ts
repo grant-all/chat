@@ -10,7 +10,7 @@ interface ITokens {
 
 class TokenService {
     async generateTokens(payload: Object): Promise<ITokens>{
-        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: "30d"})
+        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: 60 * 15})
         const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {expiresIn: "30d"})
 
         return {

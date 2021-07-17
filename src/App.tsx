@@ -1,29 +1,44 @@
 import React, {useEffect} from 'react';
-import './App.css';
+
 import useRoute from "./useRoute";
 import useActions from "./hooks/useActions";
 import useTypedSelector from "./hooks/useTypedSelector";
-import {io} from "socket.io-client";
+import "./socket"
+import {Box, makeStyles} from "@material-ui/core";
+import AlertDialog from "./components/AlertDialog";
+import {AlertDialogState} from "./redux/types/alertDialog";
 
+const useStyle = makeStyles(theme => ({
+    root: {
+        height: "100%"
+    }
+}))
 
 function App() {
-    const socket = io(window.location.origin.replace("3000", "5000"))
-
-    const {fetchCheckAuthUser} = useActions()
+    const classes = useStyle()
+    const {initializeApp, closeAlertDialog} = useActions()
+    const initialized = useTypedSelector<boolean>(({app}) => app.initialized)
     const isAuth = useTypedSelector<boolean>(({user}) => user.isAuth)
-    const isLoading = useTypedSelector<boolean>(({user}) => user.loading)
-    const routes = useRoute(isAuth)
+    const routes = useRoute(isAuth, initialized)
+    const {open, text, title, handleAgree, data}: AlertDialogState = useTypedSelector<AlertDialogState>(({alertDialog}) => alertDialog)
 
     useEffect(() => {
-        if(localStorage.getItem("accessToken"))
-            fetchCheckAuthUser()
+        initializeApp()
     }, [])
 
     return (
-        <>
-            {isLoading ? <h1>"Загрузка!!!"</h1> : routes}
-        </>
-    );
+        <Box className={classes.root}>
+            {routes}
+            <AlertDialog
+                open={open}
+                title={title}
+                text={text}
+                handleAgree={handleAgree}
+                handleClose={closeAlertDialog}
+                data={data}
+            />
+        </Box>
+    )
 }
 
 export default App;

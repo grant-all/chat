@@ -54,37 +54,35 @@ interface DialogItemProps {
     id: string
     partner: IUser,
     lastMessage: IMessage,
-    date: Date,
     countUnread: number
 }
 
 const getMessageTime = (date: Date) => {
-    console.log(date)
     if (isToday(new Date(date)) || isYesterday(new Date(date))) {
         return format(new Date(date), "HH:mm")
     }
-
-    return format(new Date(date), "dd.MM.YYYY")
+    console.log("Date" + date)
+    return format(new Date(date), "dd.MM.yyyy")
 }
 
-const DialogItem: React.FC<DialogItemProps> = ({id, partner, lastMessage, date, countUnread}) => {
+const DialogItem: React.FC<DialogItemProps> = ({id, partner, lastMessage, countUnread}) => {
     const classes = useStyle()
-
+    console.log(lastMessage)
     return (
         <Link to={`/dialogs/${id}`}>
             <Box className={classes.root}>
                 <Box className={classes.avatar}>
-                    <CustomAvatar/>
+                    <CustomAvatar avatar={partner.avatar}/>
                     <Box className={classes.box}>
                         <Typography className={classes.name}>{partner.name}</Typography>
-                        <Typography className={classes.lastMessage}>{lastMessage.text}</Typography>
+                        <Typography className={classes.lastMessage}>{lastMessage?.text}</Typography>
                     </Box>
                 </Box>
                 <Typography
                     className={classes.dateMessage}
                     variant={"subtitle2"}
                 >
-                    {getMessageTime(date)}
+                    {lastMessage && getMessageTime(lastMessage.createdAt)}
                 </Typography>
                 {
                     countUnread &&

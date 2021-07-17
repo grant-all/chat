@@ -2,12 +2,11 @@ import mongoose, {Schema, Document} from 'mongoose'
 import {IUser} from "./userModel";
 import {IMessage} from "./messageModel";
 
-export interface IDialog {
+export interface IDialog extends Document{
     partner: IUser | string;
     author:IUser | string;
-    lastMessage: IMessage | string;
+    lastMessage: IMessage;
 }
-
 const DialogScheme = new Schema<IDialog>({
     partner: {type: Schema.Types.ObjectId, ref: "User", required: true},
     author: {type: Schema.Types.ObjectId, ref: "User", required: true},

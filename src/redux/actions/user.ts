@@ -4,7 +4,7 @@ import {SetIsLoadingUserAction, UserActions, UserActionTypes} from "../types/use
 import {RegistrationRequest} from "../../models/request/RegistrationRequest";
 import {LoginRequest} from "../../models/request/LoginRequest";
 import {AppThunk} from "../store";
-import userAPI from '../../api/user'
+import userAPI from '../../utils/api/user'
 import {DialogActionTypes, SetIsLoadingDialogAction} from "../types/dialog";
 import {setIsLoadingDialog} from "./dialog";
 

@@ -1,10 +1,12 @@
 import messageModel, {IMessage} from "../models/messageModel";
-import dialogModel from "../models/dialogModel";
+import dialogModel, {IDialog} from "../models/dialogModel";
 
 class MessageService {
     async getMessages(dialogId) {
         const messages: IMessage[] = await messageModel.find({dialog: dialogId})
-            .populate(["dialogs", "users", "attachments"])
+            .populate(["dialog", "user"])//Сделать attachments!!!!!!!!!!!!!!!
+
+        console.log("Bye")
 
         if(!messages) {
             throw new Error("Сообщения не найдены")
@@ -14,7 +16,8 @@ class MessageService {
     }
 
     async create(userId, dialogId, text: string) {
-        const message = await messageModel.create({text, dialog: dialogId, user: userId})
+        let message: IMessage = await messageModel.create({text, dialog: dialogId, user: userId})
+
         const dialog = await dialogModel.findByIdAndUpdate(
             dialogId,
             {lastMessage: message._id},
@@ -24,6 +27,7 @@ class MessageService {
             throw new Error()
         }
 
+        await messageModel.populate(message, "dialog user attachments")
         return message.save()
     }
 
@@ -33,7 +37,32 @@ class MessageService {
         if(!messages) {
             throw new Error()
         }
+    }
 
+    async delete(userId: string, messageId: string) {
+        const message: IMessage = await messageModel.findById(messageId)
+            .populate("dialog")
+
+        if(!message) {
+            throw new Error("Сообщение не найдено")
+        }
+
+        if(message.user.toString() !== userId) {
+            throw new Error("Нет прав для удаления")
+        }
+
+        const dialogId: string = message.dialog as string
+        await message.remove()
+        console.log("Сообщение удалено")
+        const dialog: IDialog = await dialogModel.findById(dialogId)
+        if(!dialog)
+            throw new Error("Диалог не найден")
+
+        const lastMessage: IMessage = await messageModel.findOne({dialog: dialogId}, null, {sort: {createdAt: -1}})
+        dialog.lastMessage = lastMessage ? lastMessage : null;
+        await dialog.save()
+
+        return message
     }
 }
 

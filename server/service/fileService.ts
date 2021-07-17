@@ -1,7 +1,5 @@
 import {IUser} from "../models/userModel";
 import cloudinary from 'cloudinary'
-import fileModels, {IFile} from "../models/fileModels";
-import * as mongoose from "mongoose";
 
 class FileService {
     cloud: cloudinary.ConfigOptions
@@ -14,8 +12,8 @@ class FileService {
         });
     }
 
-    async create(userId: IUser, file: Express.Multer.File) {
-        cloudinary.v2.uploader.upload_stream(async (error: cloudinary.UploadApiErrorResponse, result: cloudinary.UploadApiResponse) => {
+    async create(userId: IUser, file: any) {
+        /*cloudinary.v2.uploader.upload_stream(async (error: cloudinary.UploadApiErrorResponse, result: cloudinary.UploadApiResponse) => {
             if(error)
                 throw new Error("Произошла ошибка при загрузке файлов")
 
@@ -31,7 +29,9 @@ class FileService {
 
             await uploadFile.save()
         })
-            .end(file.buffer)
+            .end(file.buffer)*/
+        console.log(file)
+        await cloudinary.v2.uploader.upload(file, { resource_type: "auto" })
     }
 }
 

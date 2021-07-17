@@ -5,34 +5,42 @@ import http from 'http'
 import {Server, Socket} from 'socket.io'
 
 import "./types"
-import userRouter from './routes/userRouter'
 import errorMiddleware from "./middlewares/errorMiddleware";
-import dialogRouter from './routes/dialogRouter'
-import messageRouter from "./routes/messageRouter";
-import fileRouter from "./routes/fileRouter";
+import createRoutes from "./routes";
+import {IMessage} from "./models/messageModel";
+
+export interface ClientEvents {
+    "dialog:typing": () => void;
+    "message:create": (message: IMessage) => void;
+    "message:read": (dialogId: string) => void;
+    "dialog:join": (dialogId: string) => void;
+}
+
+export interface ServerEvents {
+    "dialog:typing": () => void
+    "message:created": (message: IMessage) => void;
+    "messages:readed": (dialogId: string, userId: string) => void;
+    "message:readed": (dialogId: string) => void
+}
 
 const app = express()
 const PORT: number = +process.env.PORT || 5000
 const server = http.createServer(app)
-const io = new Server(server, {
+const io = new Server<ClientEvents, ServerEvents>(server, {
     cors: {
         origin: "http://localhost:3000",
         methods: ["GET", "POST"]
     }
 })
 
-
 app.use(express.json())
-app.use(cookieParser());
-app.use("/users", userRouter)
-app.use("/dialogs", dialogRouter)
-app.use("/messages", messageRouter)
-app.use("/files", fileRouter)
+app.use(cookieParser())
+createRoutes(app, io)
 app.use(errorMiddleware)
 
 const start = async ():Promise<void> => {
     try {
-        await mongoose.connect(process.env.DB_URL!, {useNewUrlParser: true, useUnifiedTopology: true})
+        await mongoose.connect(process.env.DB_URL!, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
         server.listen(PORT, () => {
             console.log('listening on *:5000');
         });
@@ -41,8 +49,24 @@ const start = async ():Promise<void> => {
     }
 }
 
-io.on("connection", (socket: Socket) => {
-    console.log("Hello")
+io.on("connection", (socket) => {
+    console.log("a user connected")
+
+    socket.on("dialog:join", dialogId => {
+        socket.join(dialogId)
+    })
+
+    socket.on("dialog:typing", () => {
+        socket.broadcast.emit("dialog:typing")
+    })
+
+    socket.on("message:read", (dialogId) => {
+        socket.to(dialogId).emit("message:readed", dialogId)
+    })
+
+    socket.on("disconnect", () => {
+        console.log("user disconnected")
+    })
 })
 
 start()

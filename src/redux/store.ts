@@ -1,6 +1,6 @@
 import {createStore, applyMiddleware, AnyAction} from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import thunk, {ThunkAction, ThunkDispatch} from "redux-thunk";
+import thunk, {ThunkAction} from "redux-thunk";
 
 import rootReducer, {RootState} from "./reducers";
 

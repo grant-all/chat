@@ -14,7 +14,7 @@ export default function (req: express.Request, res: express.Response, next) {
         if(!accessToken)
             return next(ApiError.UnauthoraizedError())
 
-        console.log(accessToken)
+
         const userData = tokenService.validateAccessToken(accessToken) as IUser
 
         if(!userData)

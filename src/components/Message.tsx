@@ -1,6 +1,13 @@
 import React from 'react';
-import {Avatar, Box, makeStyles, Typography} from "@material-ui/core";
+import {Avatar, Box, Icon, IconButton, makeStyles, Menu, MenuItem, SvgIcon, Typography} from "@material-ui/core";
 import classNames from "classnames";
+
+import Time from "./Time";
+import {ReactComponent as ReadIcon} from "../assets/img/read.svg"
+import {ReactComponent as UnreadIcon} from "../assets/img/unread.svg"
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import MessageAudio from "./MessageAudio";
+import {IFile} from "../models/IFile";
 
 const useStyle = makeStyles(theme => ({
     root: {
@@ -12,6 +19,7 @@ const useStyle = makeStyles(theme => ({
         alignItems: "flex-end"
     },
     box: {
+        position: "relative",
         display: "flex",
         marginBottom: "8px"
     },
@@ -47,33 +55,106 @@ const useStyle = makeStyles(theme => ({
     visitDateIsMe: {
         paddingLeft: 0,
         paddingRight: "56px",
+    },
+    icon: {
+        position: "absolute",
+        bottom: "-15px",
+        left: "-20px"
+    },
+    iconButton: {
+        position: "absolute",
+        left: "-48px",
+        top: "4px",
+        opacity: 0.5
+    },
+    attachments: {
+        display: "flex",
+        alignItems: "center"
     }
 }))
 
 interface MessageProps {
-    isMe?: boolean
+    id?: string
+    text?: string
+    date?: Date
+    isMe: boolean
+    read?: boolean
+    isTyping?: boolean
+    avatar: string,
+    handleDeleteMessage?: (messageId: string) => void,
+    attachments?: IFile[]
 }
 
-const Message: React.FC<MessageProps> = ({isMe}) => {
-    const classes = useStyle()
+const Message: React.FC<MessageProps> =
+    ({
+         id,
+         text,
+         date,
+         isMe,
+         read,
+         isTyping,
+         avatar,
+         handleDeleteMessage,
+         attachments
+     }) => {
 
-    return (
-        <Box className={classNames(classes.root, {[classes.rootIsME]: isMe})}>
-            <Box className={classes.box}>
-                <Avatar className={classes.avatar}/>
+        const classes = useStyle()
+        const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+        const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+            setAnchorEl(event.currentTarget);
+        };
+
+        const handleClose = () => {
+            setAnchorEl(null);
+        };
+
+        const onDeleteMessage = () => {
+            handleClose()
+            handleDeleteMessage!(id!)
+        }
+
+        return (
+            <Box className={classNames(classes.root, {[classes.rootIsME]: isMe})}>
+                <Box className={classes.box}>
+                    <Avatar className={classes.avatar} src={avatar}/>
+                    {(text || isTyping) && <Typography
+                        className={classNames(classes.message, {[classes.messageIsMe]: isMe})}
+                    >
+                        {text ?? "печатает..."}
+                    </Typography>}
+                    {isMe && (read ? <SvgIcon className={classes.icon} component={ReadIcon}/> :
+                        <SvgIcon className={classes.icon} component={UnreadIcon}/>)}
+                    <Box className={classes.attachments}>
+                        {attachments?.length === 0 && <MessageAudio/>}
+                    </Box>
+                    {isMe &&
+                    <>
+                        <IconButton
+                            className={classes.iconButton}
+                            onClick={handleClick}
+                        >
+                            <MoreHorizIcon/>
+                        </IconButton>
+                        <Menu
+                            id="simple-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            <MenuItem onClick={onDeleteMessage}>Удалить сообщение</MenuItem>
+                        </Menu>
+                    </>
+                    }
+                </Box>
                 <Typography
-                    className={classNames(classes.message, {[classes.messageIsMe]: isMe})}
+                    className={classNames(classes.visitDate, {[classes.visitDateIsMe]: isMe})}
                 >
-                    Салам, Брут! Чё, как, уничтожил флот галлов? 🖐🏻
+                    {date && <Time date={date}/>}
                 </Typography>
             </Box>
-            <Typography
-                className={classNames(classes.visitDate, {[classes.visitDateIsMe]: isMe})}
-            >
-                Вчера, в 12:31
-            </Typography>
-        </Box>
-    );
-};
+        );
+    };
 
 export default Message;

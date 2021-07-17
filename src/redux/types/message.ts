@@ -2,10 +2,10 @@ import {IMessage} from "../../models/IMessage";
 
 export enum MessageActionTypes {
     SET_IS_LOADING_MESSAGE = "SET_IS_LOADING_MESSAGE",
-    FETCH_REMOVE_MESSAGE = "FETCH_REMOVE_MESSAGE",
+    FETCH_DELETE_MESSAGE = "FETCH_DELETE_MESSAGE",
     ADD_MESSAGE = "ADD_MESSAGE",
-    FETCH_SEND_MESSAGE = "FETCH_SEND_MESSAGE",
-    FETCH_MESSAGES = "FETCH_MESSAGES"
+    FETCH_MESSAGES = "FETCH_MESSAGES",
+    SET_READED_STATUS_LAST_MESSAGES = "SET_READED_STATUS_LAST_MESSAGES",
 }
 
 export interface MessageState {
@@ -18,8 +18,8 @@ export interface SetIsLoadingMessageAction {
     payload: boolean
 }
 
-export interface FetchRemoveMessageAction {
-    type: MessageActionTypes.FETCH_REMOVE_MESSAGE,
+export interface FetchDeleteMessageAction {
+    type: MessageActionTypes.FETCH_DELETE_MESSAGE,
     payload: string
 }
 
@@ -28,19 +28,19 @@ export interface AddMessageAction {
     payload: IMessage
 }
 
-export interface FetchSendMessageAction {
-    type: MessageActionTypes.FETCH_SEND_MESSAGE,
-    payload: IMessage
-}
-
 export interface FetchMessagesAction {
     type: MessageActionTypes.FETCH_MESSAGES,
     payload: IMessage[]
 }
 
-export type MessageActions = SetIsLoadingMessageAction
-    | FetchRemoveMessageAction
-    | AddMessageAction
-    | FetchSendMessageAction
-    | FetchMessagesAction
+export interface SetReadedStatusLastMessages {
+    type: MessageActionTypes.SET_READED_STATUS_LAST_MESSAGES,
+    payload: string
+}
 
+
+export type MessageActions = SetIsLoadingMessageAction
+    | FetchDeleteMessageAction
+    | AddMessageAction
+    | FetchMessagesAction
+    | SetReadedStatusLastMessages

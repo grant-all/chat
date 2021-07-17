@@ -8,6 +8,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "@types/dom-mediacapture-record": "^1.0.10",
     "@types/jest": "^26.0.23",
     "@types/node": "^12.20.15",
     "@types/react": "^17.0.11",
@@ -17,6 +18,7 @@
     "classnames": "^2.3.1",
     "cookie-parser": "^1.4.5",
     "date-fns": "^2.22.1",
+    "emoji-mart": "^3.0.1",
     "express": "^4.17.1",
     "formik": "^2.2.9",
     "lodash": "^4.17.21",
@@ -61,6 +63,7 @@
   },
   "proxy": "http://localhost:5000/",
   "devDependencies": {
+    "@types/emoji-mart": "^3.0.5",
     "@types/mongoose": "^5.11.97",
     "@types/react-router-dom": "^5.1.7",
     "typescript": "^4.3.4"

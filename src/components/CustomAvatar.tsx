@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {Avatar, Badge, withStyles} from "@material-ui/core";
 
 const StyledBadge = withStyles((theme) => ({
@@ -8,7 +8,11 @@ const StyledBadge = withStyles((theme) => ({
     },
 }))(Badge);
 
-const CustomAvatar = () => {
+interface CustomAvatarProps {
+    avatar: string
+}
+
+const CustomAvatar: FC<CustomAvatarProps> = ({avatar}) => {
     return (
         <StyledBadge
             overlap="circle"
@@ -18,7 +22,7 @@ const CustomAvatar = () => {
             }}
             variant="dot"
         >
-            <Avatar/>
+            <Avatar src={avatar}/>
         </StyledBadge>
     );
 };

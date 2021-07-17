@@ -1,12 +1,11 @@
-import React, {useEffect} from 'react';
+import React, {FC, useEffect} from 'react';
 import {Box, IconButton, makeStyles, TextField, Typography} from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
 import PeopleIcon from '@material-ui/icons/People';
 import SearchIcon from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Dialogs from "./Dialogs";
-import useActions from "../hooks/useActions";
-import useTypedSelector from "../hooks/useTypedSelector";
+import {IUser} from "../models/IUser";
 import {IDialog} from "../models/IDialog";
 
 const useStyle = makeStyles(theme => ({
@@ -44,7 +43,11 @@ const useStyle = makeStyles(theme => ({
     }
 }))
 
-const Sidebar = () => {
+interface SidebarProps {
+    user: IUser,
+}
+
+const Sidebar: FC<SidebarProps> = ({user}) => {
     const classes = useStyle()
 
     return (
@@ -72,7 +75,9 @@ const Sidebar = () => {
                 }}
                 placeholder={"Поиск среди контактов"}
             />
-            <Dialogs/>
+            <Dialogs
+                user={user}
+            />
         </Box>
     );
 };

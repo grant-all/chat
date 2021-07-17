@@ -7,7 +7,7 @@ import tokenService from "../service/tokenService";
 import UserDto from "../dto/userDto";
 import userModel from "../models/userModel";
 import ApiError from "../exceptions/apiError";
-import tokenModel from "../models/tokenModel";
+
 
 class UserService {
     async registration(name: string, email: string, password: string) {
@@ -25,7 +25,7 @@ class UserService {
 
         const userDto = new UserDto(user)
         const tokens = await tokenService.generateTokens({...userDto})
-        await tokenService.saveToken(userDto.id, tokens.refreshToken)
+        await tokenService.saveToken(userDto._id, tokens.refreshToken)
 
         return {
             ...tokens,
@@ -59,7 +59,7 @@ class UserService {
 
         const userDto = new UserDto(user)
         const tokens = await tokenService.generateTokens({...userDto})
-        await tokenService.saveToken(userDto.id, tokens.refreshToken)
+        await tokenService.saveToken(userDto._id, tokens.refreshToken)
         return {...tokens, user: userDto}
     }
 
@@ -74,15 +74,15 @@ class UserService {
 
         const userData = tokenService.validateRefreshToken(refreshToken)
         const tokenFromDb = await tokenService.findToken(refreshToken)
-        console.log(tokenFromDb)
+
         if(!userData || !tokenFromDb) {
             throw ApiError.UnauthoraizedError()
         }
 
-        const user = await UserModel.findById(userData.id)
+        const user = await UserModel.findById(userData._id)
         const userDto = new UserDto(user)
         const tokens = await tokenService.generateTokens({...userDto})
-        await tokenService.saveToken(userDto.id, tokens.refreshToken)
+        await tokenService.saveToken(userDto._id, tokens.refreshToken)
 
         return {...tokens, user: userDto}
     }

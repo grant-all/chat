@@ -1,15 +1,22 @@
 import express from "express";
 import dialogService from "../service/dialogService";
-import {IUser} from "../models/userModel";
 import {IDialog} from "../models/dialogModel";
+import {Server} from "socket.io";
 
 
 class DialogController {
+    io: Server;
+
+    constructor(io: Server) {
+        this.io = io
+    }
+
+
     async getDialogs(req: express.Request, res:express.Response, next) {
         try {
-            const userId: string = req.user.id
+            const userId: string = req.user._id
             const dialogs: IDialog[] = await dialogService.getDialogs(userId)
-            return res.json(dialogs)
+            res.json(dialogs)
         } catch (e) {
             next(e)
         }
@@ -19,7 +26,7 @@ class DialogController {
     async create(req: express.Request, res:express.Response, next) {
         try {
             const dataDialog = {
-                author: req.user.id,
+                author: req.user._id,
                 partner: req.body.partner
             }
 
@@ -43,4 +50,4 @@ class DialogController {
     }
 }
 
-export default new DialogController()
+export default DialogController
