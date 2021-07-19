@@ -17,11 +17,13 @@ import getTypeAlertDialog from "../utils/getTypeAlertDialog";
 import {ALERT_DIALOG_DELETE_MESSAGE} from "../redux/types/alertDialog";
 import classNames from "classnames";
 import 'emoji-mart/css/emoji-mart.css'
-import {BaseEmoji, Picker} from 'emoji-mart'
+import {BaseEmoji, Emoji, EmojiData, Picker} from 'emoji-mart'
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import fileApi from "../utils/api/file"
 import {AxiosResponse} from "axios";
 import {IFile} from "../models/IFile";
+import reactStringReplace from "react-string-replace"
+import CustomInput from "./CustomInput";
 
 const useStyle = makeStyles(theme => ({
     root: {
@@ -42,7 +44,7 @@ const useStyle = makeStyles(theme => ({
     form: {
         position: "relative",
         display: "flex",
-        alignItems: "flex-end"
+        alignItems: "center"
     },
     textField: {
         marginRight: "5px"
@@ -113,9 +115,6 @@ const Dialog: FC<DialogProps> = ({user, currentDialog}) => {
 
     useEffect(() => {
         document.body.addEventListener("click", (event: MouseEvent) => {
-            console.log(emojiRef.current)
-            console.log(event.composedPath())
-            console.log(event.composedPath().includes(emojiRef.current as Node))
             if (!event.composedPath().includes(emojiRef.current as Node))
                 setVisiblePopup(false)
         })
@@ -171,19 +170,18 @@ const Dialog: FC<DialogProps> = ({user, currentDialog}) => {
     }
 
     const handleSubmit = (e: SyntheticEvent): void => {
-        console.log("Hello")
         e.preventDefault()
         fetchSendMessage(value)
         setValue("")
     }
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const handleChange = (e: ChangeEvent<HTMLDivElement>): void => {
         socket.emit("dialog:typing")
-        setValue(e.target.value)
+        setValue(e.target.innerHTML)
     }
 
     const handleClickEmoji = (emoji: BaseEmoji) => {
-        setValue(prevState => prevState + emoji.native)
+        setValue(prevState => prevState + emoji.colons)
     }
 
     const toggleIsTyping = () => {
@@ -207,12 +205,11 @@ const Dialog: FC<DialogProps> = ({user, currentDialog}) => {
 
             recorder.ondataavailable = async e => {
                 const file: File = new File([e.data], "audio.webm")
-                const fileReader = new FileReader()
+                const fileReader: FileReader = new FileReader()
                 fileReader.readAsDataURL(file)
 
                 fileReader.onload = async () => {
-                    console.log(fileReader.result)
-                    const response:AxiosResponse<IFile> = await fileApi.upload(fileReader.result)
+                    const response: AxiosResponse<IFile> = await fileApi.upload(fileReader.result)
                     fetchSendMessage("", response.data._id)
                 };
 
@@ -255,7 +252,10 @@ const Dialog: FC<DialogProps> = ({user, currentDialog}) => {
                                 partner={user?._id === currentDialog?.author?._id ? currentDialog?.partner : currentDialog?.author}
                                 handleDeleteMessage={handleDeleteMessage}
                             />
-                            <form className={classes.form} onSubmit={handleSubmit}>
+                            <form
+                                className={classes.form}
+                                onSubmit={handleSubmit}
+                            >
                                 <div ref={emojiRef}>
                                     {
                                         visiblePopup &&
@@ -271,18 +271,31 @@ const Dialog: FC<DialogProps> = ({user, currentDialog}) => {
                                     <IconButton onClick={toggleVisiblePopup}>
                                         <SentimentVerySatisfiedIcon
                                             fontSize={"large"}
-                                            onClick={toggleVisiblePopup}
                                         />
                                     </IconButton>
                                 </div>
-                                <TextField
+                                {/*<TextField
                                     className={classes.textField}
                                     fullWidth
                                     multiline
                                     label={"Введите текст сообщения…"}
                                     variant="outlined"
-                                    value={value}
+                                    value={"dsa" + reactStringReplace(value, /:(.+?):/g, (match: string | EmojiData, i: React.Key | null | undefined) => (
+                                        <Emoji
+                                            key={i}
+                                            emoji={match}
+                                            set="apple"
+                                            size={16}
+                                        />
+                                    ))}
                                     onChange={handleChange}
+                                >
+                                    <Emoji emoji='santa' set='apple' size={16} />
+                                </TextField>*/}
+                                <CustomInput
+                                    value={value}
+                                    setValue={setValue}
+                                    handleChange={handleChange}
                                 />
                                 <IconButton>
                                     <PhotoCameraIcon fontSize={"large"}/>
@@ -290,15 +303,14 @@ const Dialog: FC<DialogProps> = ({user, currentDialog}) => {
                                 <Box className={classes.iconBox}>
                                     <IconButton
                                         className={classNames(classes.icon, {[classes.hiddenIcon]: value})}
+                                        onClick={isRecord ? handleStopRecord : handleRecord}
                                     >
                                         {isRecord ?
                                             <FiberManualRecordIcon
                                                 fontSize={"large"}
-                                                onClick={handleStopRecord}
                                             /> :
                                             <MicIcon
                                                 fontSize={"large"}
-                                                onClick={handleRecord}
                                             />}
                                     </IconButton>
                                     <IconButton

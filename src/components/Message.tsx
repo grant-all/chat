@@ -126,7 +126,7 @@ const Message: React.FC<MessageProps> =
                     {isMe && (read ? <SvgIcon className={classes.icon} component={ReadIcon}/> :
                         <SvgIcon className={classes.icon} component={UnreadIcon}/>)}
                     <Box className={classes.attachments}>
-                        {attachments?.length === 0 && <MessageAudio/>}
+                        {attachments?.length !== 0 && <MessageAudio/>}
                     </Box>
                     {isMe &&
                     <>

@@ -7,10 +7,8 @@ class FileController {
     async create(req: express.Request, res:express.Response, next) {
         try {
             const userId: IUser = req.user._id;
-            //const file: Express.Multer.File = req.file
             const file = req.body.file
-            await fileService.create(userId, file)
-
+            return fileService.create(userId, file)
         } catch (e) {
             next(e)
         }

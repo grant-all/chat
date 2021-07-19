@@ -37,6 +37,7 @@ const Messages: FC<MessagesProps> = ({user, items,  partner, isTyping, handleDel
                 <Box className={classes.messages}>
                     {items?.map((messageObj: IMessage) => (
                         <Message
+                            key={messageObj._id}
                             id={messageObj._id}
                             isMe={user._id === messageObj.user._id}
                             text={messageObj.text}

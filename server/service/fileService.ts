@@ -1,5 +1,6 @@
 import {IUser} from "../models/userModel";
 import cloudinary from 'cloudinary'
+import fileModels, {IFile} from "../models/fileModels";
 
 class FileService {
     cloud: cloudinary.ConfigOptions
@@ -13,25 +14,24 @@ class FileService {
     }
 
     async create(userId: IUser, file: any) {
-        /*cloudinary.v2.uploader.upload_stream(async (error: cloudinary.UploadApiErrorResponse, result: cloudinary.UploadApiResponse) => {
-            if(error)
+        console.log(file)
+        await cloudinary.v2.uploader.upload(file, {resource_type: "auto"}, async (error: cloudinary.UploadApiErrorResponse, result: cloudinary.UploadApiResponse) => {
+            if (error)
                 throw new Error("Произошла ошибка при загрузке файлов")
-
-            const fileData: Pick<cloudinary.UploadApiResponse, "filename" | "size" | "ext" | "url" | "user"> = {
-                filename: result.original_filename,
-                size: result.size,
+            console.log(result)
+            const fileData: Pick<IFile, "fileName" | "size" | "ext" | "url" | "user"> = {
+                fileName: result.original_filename,
+                size: result.bytes,
                 ext: result.format,
                 url: result.url,
                 user: userId
             }
 
-            const uploadFile: IFile & mongoose.Document = await fileModels.create(fileData)
+            console.log(fileData)
 
-            await uploadFile.save()
+            const uploadFile: IFile = await fileModels.create(fileData)
+            return await uploadFile.save()
         })
-            .end(file.buffer)*/
-        console.log(file)
-        await cloudinary.v2.uploader.upload(file, { resource_type: "auto" })
     }
 }
 

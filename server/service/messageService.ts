@@ -1,10 +1,11 @@
 import messageModel, {IMessage} from "../models/messageModel";
 import dialogModel, {IDialog} from "../models/dialogModel";
+import {IFile} from "../models/fileModels";
 
 class MessageService {
     async getMessages(dialogId) {
         const messages: IMessage[] = await messageModel.find({dialog: dialogId})
-            .populate(["dialog", "user"])//Сделать attachments!!!!!!!!!!!!!!!
+            .populate(["dialog", "user", "attachments"])//Сделать attachments!!!!!!!!!!!!!!!
 
         console.log("Bye")
 
@@ -15,9 +16,12 @@ class MessageService {
         return messages
     }
 
-    async create(userId, dialogId, text: string) {
-        let message: IMessage = await messageModel.create({text, dialog: dialogId, user: userId})
-
+    async create(userId: string, dialogId: string, text: string, attachments: IFile[]) {
+        console.log(attachments)
+        let message: IMessage = await messageModel.create({text, dialog: dialogId, user: userId, attachments})
+        console.log()
+        console.log()
+        console.log()
         const dialog = await dialogModel.findByIdAndUpdate(
             dialogId,
             {lastMessage: message._id},
@@ -26,8 +30,9 @@ class MessageService {
         if(!dialog) {
             throw new Error()
         }
-
-        await messageModel.populate(message, "dialog user attachments")
+        console.log(message)
+        await messageModel.populate(message, "attachments dialog user")
+        console.log(message)
         return message.save()
     }
 
