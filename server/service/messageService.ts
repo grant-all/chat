@@ -16,12 +16,8 @@ class MessageService {
         return messages
     }
 
-    async create(userId: string, dialogId: string, text: string, attachments: IFile[]) {
-        console.log(attachments)
+    async create(userId: string, dialogId: string, text: string, attachments: string[]) {
         let message: IMessage = await messageModel.create({text, dialog: dialogId, user: userId, attachments})
-        console.log()
-        console.log()
-        console.log()
         const dialog = await dialogModel.findByIdAndUpdate(
             dialogId,
             {lastMessage: message._id},
@@ -30,9 +26,8 @@ class MessageService {
         if(!dialog) {
             throw new Error()
         }
-        console.log(message)
+
         await messageModel.populate(message, "attachments dialog user")
-        console.log(message)
         return message.save()
     }
 

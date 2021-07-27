@@ -39,7 +39,7 @@ export const fetchDeleteMessage = (messageId: string): AppThunk<MessageActions |
     }
 }
 
-export const fetchSendMessage = (text: string, attachments?: any): AppThunk<MessageActions | DialogActions> => {
+export const fetchSendMessage = (text: string, attachments?: string[]): AppThunk<MessageActions | DialogActions> => {
     return async (dispatch, getState) => {
         try {
             dispatch(setIsLoadingMessage(true))

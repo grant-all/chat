@@ -8,6 +8,8 @@ import {ReactComponent as UnreadIcon} from "../assets/img/unread.svg"
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import MessageAudio from "./MessageAudio";
 import {IFile} from "../models/IFile";
+import reactStringReplace from 'react-string-replace'
+import {Emoji} from 'emoji-mart'
 
 const useStyle = makeStyles(theme => ({
     root: {
@@ -21,10 +23,10 @@ const useStyle = makeStyles(theme => ({
     box: {
         position: "relative",
         display: "flex",
-        marginBottom: "8px"
+        marginBottom: "8px",
+        alignItems: "center"
     },
     avatar: {
-        alignSelf: "flex-end"
     },
     message: {
         marginLeft: "13px",
@@ -64,12 +66,12 @@ const useStyle = makeStyles(theme => ({
     iconButton: {
         position: "absolute",
         left: "-48px",
-        top: "4px",
         opacity: 0.5
     },
     attachments: {
         display: "flex",
-        alignItems: "center"
+        alignItems: "center",
+        order: -1
     }
 }))
 
@@ -121,7 +123,9 @@ const Message: React.FC<MessageProps> =
                     {(text || isTyping) && <Typography
                         className={classNames(classes.message, {[classes.messageIsMe]: isMe})}
                     >
-                        {text ?? "печатает..."}
+                        {reactStringReplace(text, /:(.+?):/g, match => (
+                            <Emoji emoji={match} size={16}/>
+                        )) ?? "печатает..."}
                     </Typography>}
                     {isMe && (read ? <SvgIcon className={classes.icon} component={ReadIcon}/> :
                         <SvgIcon className={classes.icon} component={UnreadIcon}/>)}

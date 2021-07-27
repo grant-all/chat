@@ -8,7 +8,7 @@ class FileController {
         try {
             const userId: IUser = req.user._id;
             const file = req.body.file
-            return fileService.create(userId, file)
+            await fileService.create(userId, file, res)
         } catch (e) {
             next(e)
         }

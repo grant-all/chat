@@ -8,7 +8,7 @@ export interface IMessage extends Document{
     text: string,
     dialog: IDialog | string,
     read: boolean,
-    attachments?: IFile[]
+    attachments?: IFile[] | string[]
 }
 
 const MessageScheme = new Schema<IMessage>({

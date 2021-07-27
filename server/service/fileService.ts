@@ -1,6 +1,7 @@
-import {IUser} from "../models/userModel";
 import cloudinary from 'cloudinary'
+import express from "express";
 import fileModels, {IFile} from "../models/fileModels";
+import {IUser} from "../models/userModel";
 
 class FileService {
     cloud: cloudinary.ConfigOptions
@@ -13,24 +14,21 @@ class FileService {
         });
     }
 
-    async create(userId: IUser, file: any) {
-        console.log(file)
+    async create(userId: IUser, file: string, res: express.Response): Promise<void> {
         await cloudinary.v2.uploader.upload(file, {resource_type: "auto"}, async (error: cloudinary.UploadApiErrorResponse, result: cloudinary.UploadApiResponse) => {
             if (error)
                 throw new Error("Произошла ошибка при загрузке файлов")
-            console.log(result)
-            const fileData: Pick<IFile, "fileName" | "size" | "ext" | "url" | "user"> = {
-                fileName: result.original_filename,
+            const fileData: Pick<IFile, "size" | "ext" | "url" | "user"> = {
                 size: result.bytes,
                 ext: result.format,
                 url: result.url,
                 user: userId
             }
-
-            console.log(fileData)
-
+            
             const uploadFile: IFile = await fileModels.create(fileData)
-            return await uploadFile.save()
+            console.log(uploadFile)
+            await uploadFile.save()
+            res.json(uploadFile)
         })
     }
 }

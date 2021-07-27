@@ -3,6 +3,7 @@ import messageService from "../service/messageService";
 import {Server} from "socket.io";
 import {ClientEvents, ServerEvents} from "../index";
 import {IFile} from "../models/fileModels";
+import { IMessage } from "../models/messageModel";
 
 class MessageController {
     io: Server<ClientEvents, ServerEvents>
@@ -29,12 +30,11 @@ class MessageController {
 
     async create(req: express.Request, res:express.Response, next: express.NextFunction):Promise<void> {
         try {
-            const {dialogId, text, attachments}: {dialogId: string, text: string, attachments:IFile[]} = req.body
+            const {dialogId, text, attachments}: {dialogId: string, text: string, attachments:string[]} = req.body
             const userId: string = req.user._id
             await messageService.updateReadStatus(userId, dialogId)
-            const message = await messageService.create(userId, dialogId, text, attachments)
+            const message: IMessage = await messageService.create(userId, dialogId, text, attachments)
             res.json(message)
-            console.log("dialogId" + dialogId)
             this.io.to(dialogId).emit("message:created", message)
         } catch (e) {
             next(e)

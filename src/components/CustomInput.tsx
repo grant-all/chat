@@ -1,6 +1,6 @@
-import React, {ChangeEvent, FC, useRef, useState} from 'react';
-import {Box, makeStyles, Typography} from "@material-ui/core"
-import {Emoji, EmojiData} from "emoji-mart";
+import React, { ChangeEvent, FC, FormEvent, FormEventHandler, useRef, useState } from 'react';
+import { Box, makeStyles, Typography } from "@material-ui/core"
+import { Emoji, EmojiData } from "emoji-mart";
 import reactStringReplace from "react-string-replace";
 
 const useStyle = makeStyles(theme => ({
@@ -25,40 +25,33 @@ const useStyle = makeStyles(theme => ({
         position: "absolute",
         top: "10px",
         left: "10px",
+        zIndex: -1,
         color: "#B4B4B4"
     }
 }))
 
 interface CustomInputProps {
-    value: string,
-    setValue: (value: string) => void,
-    handleChange: (e: ChangeEvent<HTMLDivElement>) => void
+    refDiv: React.RefObject<HTMLDivElement>
+    handleInput: (e: ChangeEvent<HTMLDivElement>) => void
 }
 
-const CustomInput: FC<CustomInputProps> = ({value, setValue, handleChange}) => {
+const CustomInput: FC<CustomInputProps> = ({ refDiv, handleInput }) => {
     const classes = useStyle()
-    const refDiv: React.RefObject<HTMLInputElement> = useRef(null)
-
     return (
         <Box className={classes.root}>
             <div
-                ref={refDiv}
                 className={classes.div}
+                ref={refDiv}
                 contentEditable={true}
-                placeholder={"Введите текст сообщения…"}
-                onChange={handleChange}
                 suppressContentEditableWarning={true}
-            >
-                {reactStringReplace(value, /:(.+?):/g, (match: string | EmojiData, i: React.Key | null |
-                    undefined) => (
-                    <Emoji
-                        key={i}
-                        emoji={match}
-                        set="apple"
-                        size={16}
+            />
+                {/* {reactStringReplace(value, /:(.+?):/g, (match, i) => (
+                    <img
+                        draggable={false} 
+                        className={classes.img} 
+                        src={`https://raw.githubusercontent.com/iamcal/emoji-data/master/img-apple-64/${match + ".png"}`} alt="emoji" 
                     />
-                ))}
-            </div>
+                ))} */}
             <Typography className={classes.placeholder}>Введите сообщение</Typography>
         </Box>
     );
