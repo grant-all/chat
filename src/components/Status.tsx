@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {Badge, Box, IconButton, makeStyles, Typography, withStyles, Menu, MenuItem} from "@material-ui/core";
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
@@ -45,7 +45,12 @@ const StyledBadge = withStyles((theme) => ({
     },
 }))(Badge);
 
-const Status = () => {
+interface StatusProps {
+    name: string,
+    isOnline: boolean
+}
+
+const Status:FC<StatusProps> = ({name, isOnline}) => {
     const classes = useStyle()
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -61,7 +66,7 @@ const Status = () => {
     return (
         <Box className={classes.root}>
             <Box>
-                <Typography className={classes.name}>Гай Юлий Цезарь</Typography>
+                <Typography className={classes.name}>{name}</Typography>
                 <Box className={classes.box}>
                     <StyledBadge
                         variant="dot"
@@ -73,7 +78,7 @@ const Status = () => {
                     <Typography
                         className={classes.status}
                     >
-                        онлайн
+                        {isOnline ? "Онлайн" : "Оффлайн"}
                     </Typography>
                 </Box>
             </Box>

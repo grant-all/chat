@@ -1,20 +1,28 @@
 import React, {FC} from 'react';
-import {Avatar, Badge, withStyles} from "@material-ui/core";
+import {Avatar, Badge, makeStyles, withStyles} from "@material-ui/core";
+import classNames from "classnames";
 
-const StyledBadge = withStyles((theme) => ({
+const styles = (props: any) => ({
     badge: {
-        backgroundColor: '#44b700',
-        boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-    },
-}))(Badge);
+        backgroundColor: props.isOnline ? "#44b700" : "gray",
+        boxShadow: `0 0 0 2px ${props.theme.palette.background.paper}`
+    }
+})
+
+const withStylesProps = (styles: any) =>
+        (isOnline: boolean) => {
+            return withStyles(theme => styles({isOnline, theme}))(Badge)
+        };
 
 interface CustomAvatarProps {
-    avatar: string
+    avatar: string,
+    isOnline: boolean,
 }
+const CustomAvatar: FC<CustomAvatarProps> = ({avatar, isOnline}) => {
+    const CustomBadge = withStylesProps(styles)(isOnline)
 
-const CustomAvatar: FC<CustomAvatarProps> = ({avatar}) => {
     return (
-        <StyledBadge
+        <CustomBadge
             overlap="circle"
             anchorOrigin={{
                 vertical: 'bottom',
@@ -23,7 +31,7 @@ const CustomAvatar: FC<CustomAvatarProps> = ({avatar}) => {
             variant="dot"
         >
             <Avatar src={avatar}/>
-        </StyledBadge>
+        </CustomBadge>
     );
 };
 

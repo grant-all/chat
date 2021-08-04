@@ -1,4 +1,5 @@
 import {IMessage} from "../../models/IMessage";
+import {SetCurrentDialogAction} from "./dialog";
 
 export enum MessageActionTypes {
     SET_IS_LOADING_MESSAGE = "SET_IS_LOADING_MESSAGE",
@@ -33,7 +34,7 @@ export interface FetchMessagesAction {
     payload: IMessage[]
 }
 
-export interface SetReadedStatusLastMessages {
+export interface SetReadedStatusLastMessagesAction {
     type: MessageActionTypes.SET_READED_STATUS_LAST_MESSAGES,
     payload: string
 }
@@ -43,4 +44,4 @@ export type MessageActions = SetIsLoadingMessageAction
     | FetchDeleteMessageAction
     | AddMessageAction
     | FetchMessagesAction
-    | SetReadedStatusLastMessages
+    | SetReadedStatusLastMessagesAction

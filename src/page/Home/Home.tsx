@@ -10,7 +10,7 @@ import useTypedSelector from "../../hooks/useTypedSelector";
 import {useLocation} from "react-router-dom";
 import {IUser} from "../../models/IUser";
 import {IDialog} from "../../models/IDialog";
-import socket from "../../socket";
+import {Socket} from "socket.io-client";
 
 
 const useStyle = makeStyles(theme => ({
@@ -22,14 +22,16 @@ const useStyle = makeStyles(theme => ({
 
 const Home = () => {
     const classes = useStyle()
-    const {fetchDialogs, fetchLogoutUser, setCurrentDialog} = useActions()
-    const user = useTypedSelector<IUser>(({user}) => user.user)
-    const isActivated = useTypedSelector<boolean>(({user}) => user.user.isActivated)
-    const currentDialog = useTypedSelector<IDialog>(({dialog}) => _.find(dialog.items, {_id: dialog.currentDialogId})!)
+    const {fetchDialogs, fetchLogoutUser, setCurrentDialog, setSocket} = useActions()
+    const user:IUser = useTypedSelector<IUser>(({user}) => user.user)
+    const isActivated:boolean = useTypedSelector<boolean>(({user}) => user.user.isActivated)
+    const currentDialog:IDialog = useTypedSelector<IDialog>(({dialog}) => _.find(dialog.items, {_id: dialog.currentDialogId})!)
+    const socket: Socket | null = useTypedSelector<Socket | null>(({socket}) => socket.socket)
     const location = useLocation()
 
     useEffect(() => {
         fetchDialogs()
+        setSocket(user._id)
     }, [])
 
     useEffect(() => {
@@ -43,16 +45,17 @@ const Home = () => {
     return (
         isActivated ?
             (
-                <Box className={classes.root}>
-                <button onClick={() => fetchLogoutUser()}>dsadsa</button>
-                <Sidebar
-                    user={user}
-                />
-                <Dialog
-                    currentDialog={currentDialog}
-                    user={user}
-                />
-            </Box>
+                socket && <Box className={classes.root}>
+                    <button onClick={() => fetchLogoutUser()}>dsadsa</button>
+                    <Sidebar
+                        user={user}
+                    />
+                    <Dialog
+                        currentDialog={currentDialog}
+                        user={user}
+                        socket={socket}
+                    />
+                </Box>
             )
             : <CheckEmailInfo isActivated={isActivated}/>
     )

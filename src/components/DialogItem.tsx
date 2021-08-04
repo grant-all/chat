@@ -5,6 +5,9 @@ import {IMessage} from "../models/IMessage";
 import {IUser} from "../models/IUser";
 import {format, isToday, isYesterday} from 'date-fns'
 import {Link} from 'react-router-dom'
+import reactStringReplace from "react-string-replace";
+import {Emoji} from "emoji-mart";
+import classNames from "classnames";
 
 const useStyle = makeStyles(theme => ({
     root: {
@@ -34,7 +37,6 @@ const useStyle = makeStyles(theme => ({
         fontWeight: 600
     },
     lastMessage: {
-        opacity: "0.4",
         whiteSpace: "nowrap",
     },
     dateMessage: {
@@ -47,15 +49,11 @@ const useStyle = makeStyles(theme => ({
         position: "absolute",
         bottom: "24px",
         right: "29px",
+    },
+    link: {
+        textDecoration: "none"
     }
 }))
-
-interface DialogItemProps {
-    id: string
-    partner: IUser,
-    lastMessage: IMessage,
-    countUnread: number
-}
 
 const getMessageTime = (date: Date) => {
     if (isToday(new Date(date)) || isYesterday(new Date(date))) {
@@ -65,17 +63,29 @@ const getMessageTime = (date: Date) => {
     return format(new Date(date), "dd.MM.yyyy")
 }
 
-const DialogItem: React.FC<DialogItemProps> = ({id, partner, lastMessage, countUnread}) => {
+interface DialogItemProps {
+    id: string
+    partner: IUser,
+    lastMessage: IMessage,
+    countUnread: number,
+    selected: boolean
+}
+
+const DialogItem: React.FC<DialogItemProps> = ({id, partner, lastMessage, countUnread, selected}) => {
     const classes = useStyle()
-    console.log(lastMessage)
+
     return (
-        <Link to={`/dialogs/${id}`}>
-            <Box className={classes.root}>
+        <Link to={`/dialogs/${id}`} className={classes.link}>
+            <Box className={classNames(classes.root, {[classes.selected]: selected})}>
                 <Box className={classes.avatar}>
-                    <CustomAvatar avatar={partner.avatar}/>
+                    <CustomAvatar avatar={partner.avatar} isOnline={partner.isOnline}/>
                     <Box className={classes.box}>
                         <Typography className={classes.name}>{partner.name}</Typography>
-                        <Typography className={classes.lastMessage}>{lastMessage?.text}</Typography>
+                        <Typography className={classes.lastMessage}>
+                            {reactStringReplace(lastMessage.text, /:(.+?):/g, match => (
+                                <Emoji key={match} emoji={match} size={16}/>
+                            ))}
+                        </Typography>
                     </Box>
                 </Box>
                 <Typography

@@ -3,7 +3,6 @@ import React, {useEffect} from 'react';
 import useRoute from "./useRoute";
 import useActions from "./hooks/useActions";
 import useTypedSelector from "./hooks/useTypedSelector";
-import "./socket"
 import {Box, makeStyles} from "@material-ui/core";
 import AlertDialog from "./components/AlertDialog";
 import {AlertDialogState} from "./redux/types/alertDialog";

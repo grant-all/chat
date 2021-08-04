@@ -5,8 +5,6 @@ import {RegistrationRequest} from "../../models/request/RegistrationRequest";
 import {LoginRequest} from "../../models/request/LoginRequest";
 import {AppThunk} from "../store";
 import userAPI from '../../utils/api/user'
-import {DialogActionTypes, SetIsLoadingDialogAction} from "../types/dialog";
-import {setIsLoadingDialog} from "./dialog";
 
 export const fetchRegistrationUser = (user: RegistrationRequest): AppThunk<UserActions> => {
     return async (dispatch) => {
@@ -69,4 +67,5 @@ export const setIsLoadingUser = (payload: boolean): SetIsLoadingUserAction => ({
     type: UserActionTypes.SET_IS_LOADING_USER,
     payload
 })
+
 

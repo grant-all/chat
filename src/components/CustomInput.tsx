@@ -42,6 +42,7 @@ const CustomInput: FC<CustomInputProps> = ({ refDiv, handleInput }) => {
             <div
                 className={classes.div}
                 ref={refDiv}
+                onInput={handleInput}
                 contentEditable={true}
                 suppressContentEditableWarning={true}
             />

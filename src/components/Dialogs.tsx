@@ -17,12 +17,15 @@ interface DialogsProps {
 }
 
 const Dialogs: FC<DialogsProps> = ({user}) => {
+    const currentDialogId = useTypedSelector<string>(({dialog}) => dialog.currentDialogId)
     const dialogs = useTypedSelector<IDialog[]>(({dialog}) => dialog.items)
     const isLoading = useTypedSelector<boolean>(({dialog}) => dialog.isLoading)
 
     const handleSelectedDialogItem = (dialogId: string): void => {
 
     }
+
+    console.log(dialogs)
 
     return (
         <Box>
@@ -33,6 +36,7 @@ const Dialogs: FC<DialogsProps> = ({user}) => {
                     partner={user._id === dialogObj.author._id ? dialogObj.partner : dialogObj.author}
                     lastMessage={dialogObj.lastMessage}
                     countUnread={dialogObj.countUnread}
+                    selected={dialogObj._id === currentDialogId}
                 />
             ))}
         </Box>

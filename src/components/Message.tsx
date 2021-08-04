@@ -124,7 +124,7 @@ const Message: React.FC<MessageProps> =
                         className={classNames(classes.message, {[classes.messageIsMe]: isMe})}
                     >
                         {reactStringReplace(text, /:(.+?):/g, match => (
-                            <Emoji emoji={match} size={16}/>
+                            <Emoji key={match} emoji={match} size={16}/>
                         )) ?? "печатает..."}
                     </Typography>}
                     {isMe && (read ? <SvgIcon className={classes.icon} component={ReadIcon}/> :

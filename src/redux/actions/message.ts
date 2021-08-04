@@ -3,7 +3,7 @@ import {
     MessageActions,
     MessageActionTypes,
     SetIsLoadingMessageAction,
-    SetReadedStatusLastMessages
+    SetReadedStatusLastMessagesAction
 } from "../types/message";
 import messagesAPI from '../../utils/api/messaages'
 import {IMessage} from "../../models/IMessage";
@@ -67,7 +67,7 @@ export const setIsLoadingMessage = (payload: boolean): SetIsLoadingMessageAction
     payload
 })
 
-export const setReadedStatusLastMessages = (payload: string): SetReadedStatusLastMessages => ({
+export const setReadedStatusLastMessages = (payload: string): SetReadedStatusLastMessagesAction => ({
     type: MessageActionTypes.SET_READED_STATUS_LAST_MESSAGES,
     payload
 })

@@ -1,4 +1,5 @@
 import {IUser} from "../models/userModel";
+import * as mongoose from "mongoose";
 
 interface IUserDto{
     _id: string,
@@ -13,7 +14,7 @@ export default class UserDto implements IUserDto{
     isActivated;
     avatar;
 
-    constructor(model: IUser) {
+    constructor(model: IUser & mongoose.Document) {
         this._id = model._id
         this.email = model.email
         this.isActivated = model.isActivated

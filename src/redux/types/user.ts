@@ -3,16 +3,18 @@ import {DialogActionTypes} from "./dialog";
 
 export enum UserActionTypes {
     SET_IS_LOADING_USER = "SET_IS_LOADING_USER",
+    SET_IS_ONLINE_USER = "SET_IS_LOADING_USER",
     FETCH_USER_REGISTRATION = "FETCH_USERS_REGISTRATION",
     FETCH_USER_LOGIN = "FETCH_USERS_LOGIN",
     FETCH_USER_LOGOUT = "FETCH_USER_LOGOUT",
     FETCH_USER_IS_AUTH = "FETCH_USER_IS_AUTH",
+
 }
 
 export interface UserState {
     user: IUser,
     isAuth: boolean
-    loading: boolean
+    loading: boolean,
 }
 
 export interface SetIsLoadingUserAction {

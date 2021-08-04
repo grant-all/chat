@@ -5,5 +5,5 @@ export interface IUser {
     isActivated: boolean,
     avatar: string,
     accessToken?: string,
-
+    isOnline: boolean
 }

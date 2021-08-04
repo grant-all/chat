@@ -5,9 +5,6 @@ import {Box, Container, IconButton, makeStyles, TextField} from "@material-ui/co
 import Message from './Message'
 import {IMessage} from "../models/IMessage";
 import {IUser} from "../models/IUser";
-import useActions from "../hooks/useActions";
-import useTypedSelector from "../hooks/useTypedSelector";
-import socket from "../socket";
 
 const useStyle = makeStyles(theme => ({
     root: {

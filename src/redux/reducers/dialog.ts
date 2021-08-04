@@ -1,6 +1,5 @@
 import {DialogActions, DialogActionTypes, DialogState} from "../types/dialog";
 import {MessageActions, MessageActionTypes} from "../types/message";
-import {IDialog} from "../../models/IDialog";
 
 const initialState : DialogState = {
     items: [],
@@ -52,6 +51,21 @@ export const dialogReducer = (state = initialState, action: DialogActions | Mess
                 items: state.items.map(dialogObj => {
                     if(dialogObj._id === action.payload.dialogId)
                         dialogObj.lastMessage = action.payload.message
+
+                    return dialogObj
+                })
+            }
+
+
+
+        case DialogActionTypes.SET_IS_ONLINE:
+            return {
+                ...state,
+                items: state.items.map(dialogObj => {
+                    if(dialogObj.author._id === action.payload.userId)
+                        dialogObj.author.isOnline = action.payload.isOnline
+                    else if(dialogObj.partner._id === action.payload.userId)
+                        dialogObj.partner.isOnline = action.payload.isOnline
 
                     return dialogObj
                 })

@@ -4,7 +4,7 @@ import {IUser} from "../../models/IUser";
 const initialState : UserState = {
     user: {} as IUser,
     isAuth: false,
-    loading: false,
+    loading: false
 }
 
 export const userReducer = (state = initialState, action: UserActions) : UserState => {

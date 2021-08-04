@@ -2,14 +2,13 @@ import {AppThunk} from "../store";
 import {
     DialogActions,
     DialogActionTypes,
-    SetCurrentDialog,
     SetIsLoadingDialogAction,
-    SetReadedStatusLastMessage,
-    DeleteMessage
+    SetReadedStatusLastMessageAction,
+    DeleteMessageAction, SetIsOnlineDialogAction
 } from "../types/dialog";
 import dialogAPI from '../../utils/api/dialogs'
 import {IMessage} from "../../models/IMessage";
-import socket from "../../socket";
+import {Socket} from "socket.io-client";
 
 export const fetchDialogs = (): AppThunk<DialogActions> => {
     return async (dispatch) => {
@@ -39,18 +38,19 @@ export const fetchRemove = (dialogId: string): AppThunk<DialogActions> => {
 }
 
 export const setCurrentDialog = (payload: string) : AppThunk<DialogActions> => {
-    return dispatch => {
+    return (dispatch, getState) => {
+            const socket: Socket = getState().socket.socket!
             dispatch({type: DialogActionTypes.SET_CURRENT_DIALOG, payload})
             socket.emit("dialog:join", payload)
     }
 }
 
-export const setReadedStatusLastMessage = (payload: string): SetReadedStatusLastMessage => ({
+export const setReadedStatusLastMessage = (payload: string): SetReadedStatusLastMessageAction => ({
     type: DialogActionTypes.SET_READED_STATUS_LAST_MESSAGE,
     payload
 })
 
-export const deleteMessage = (dialogId: string, message: IMessage): DeleteMessage => ({
+export const deleteMessage = (dialogId: string, message: IMessage): DeleteMessageAction => ({
     type: DialogActionTypes.DELETE_MESSAGE,
     payload: {
         dialogId,
@@ -61,4 +61,12 @@ export const deleteMessage = (dialogId: string, message: IMessage): DeleteMessag
 export const setIsLoadingDialog = (payload: boolean) : SetIsLoadingDialogAction => ({
     type: DialogActionTypes.SET_IS_LOADING_DIALOG,
     payload
+})
+
+export const setIsOnline = (userId: string, isOnline: boolean) : SetIsOnlineDialogAction => ({
+    type: DialogActionTypes.SET_IS_ONLINE,
+    payload: {
+        userId,
+        isOnline
+    }
 })

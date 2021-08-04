@@ -4,6 +4,7 @@ import {IMessage} from "../../models/IMessage";
 export enum DialogActionTypes {
     FETCH_DIALOGS = "FETCH_DIALOGS",
     SET_CURRENT_DIALOG = "SET_CURRENT_DIALOG",
+    SET_IS_ONLINE = "SET_IS_ONLINE",
     SET_IS_LOADING_DIALOG = "SET_IS_LOADING_DIALOG",
     FETCH_DIALOG_REMOVE = "FETCH_DIALOG_REMOVE",
     SET_READED_STATUS_LAST_MESSAGE = "SET_READED_STATUS_LAST_MESSAGE",
@@ -31,17 +32,25 @@ export interface SetIsLoadingDialogAction {
     payload: boolean
 }
 
-export interface SetCurrentDialog {
+export interface SetCurrentDialogAction {
     type: DialogActionTypes.SET_CURRENT_DIALOG,
     payload: string
 }
 
-export interface SetReadedStatusLastMessage {
+export interface SetIsOnlineDialogAction {
+    type: DialogActionTypes.SET_IS_ONLINE,
+    payload: {
+        userId: string,
+        isOnline: boolean
+    }
+}
+
+export interface SetReadedStatusLastMessageAction {
     type: DialogActionTypes.SET_READED_STATUS_LAST_MESSAGE,
     payload: string
 }
 
-export interface DeleteMessage {
+export interface DeleteMessageAction {
     type: DialogActionTypes.DELETE_MESSAGE,
     payload: {
         message: IMessage,
@@ -49,8 +58,4 @@ export interface DeleteMessage {
     }
 }
 
-/*export interface AddMessage {
-    type: DialogActionTypes.ADD_MESSAGE
-}*/
-
-export type DialogActions = fetchDialogs | fetchRemove | SetIsLoadingDialogAction | SetCurrentDialog | SetReadedStatusLastMessage | DeleteMessage
+export type DialogActions = fetchDialogs | fetchRemove | SetIsLoadingDialogAction | SetCurrentDialogAction | SetReadedStatusLastMessageAction | DeleteMessageAction | SetIsOnlineDialogAction
