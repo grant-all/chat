@@ -14,6 +14,7 @@ import fileApi from "../utils/api/file";
 import {AppThunk} from "../redux/store";
 import {MessageActions} from "../redux/types/message";
 import {DialogActions} from "../redux/types/dialog";
+import {Socket} from "socket.io-client";
 
 const useStyle = makeStyles(theme => ({
     form: {
@@ -52,9 +53,10 @@ interface FormSendMessageProps {
     handleSubmit: (e: SyntheticEvent) => void,
     fetchSendMessage:( text: string, attachments?: string[]) => AppThunk<MessageActions | DialogActions>
     refDiv: React.RefObject<HTMLDivElement>;
+    socket: Socket | null
 }
 
-const FormSendMessage: FC<FormSendMessageProps> = ({handleSubmit, fetchSendMessage, refDiv}) => {
+const FormSendMessage: FC<FormSendMessageProps> = ({handleSubmit, fetchSendMessage, refDiv, socket}) => {
     const classes = useStyle()
     const [value, setValue] = useState<string>("")
     const [isRecord, setIsRecord] = useState<boolean>(false)
@@ -71,6 +73,7 @@ const FormSendMessage: FC<FormSendMessageProps> = ({handleSubmit, fetchSendMessa
     }, [])
 
     const handleStopRecord = () => {
+        console.log("Stop record")
         mediaRecorder?.stop()
         setIsRecord(false)
     }
@@ -81,6 +84,7 @@ const FormSendMessage: FC<FormSendMessageProps> = ({handleSubmit, fetchSendMessa
 
     const handleRecord = async () => {
         try {
+            console.log("Record start")
             const stream: MediaStream = await navigator.mediaDevices.getUserMedia({audio: true})
             const recorder: MediaRecorder = new MediaRecorder(stream)
             setMediaRecorder(recorder)
@@ -88,7 +92,7 @@ const FormSendMessage: FC<FormSendMessageProps> = ({handleSubmit, fetchSendMessa
             recorder.start()
 
             recorder.ondataavailable = async e => {
-                const file: File = new File([e.data], "audio.webm")
+                const file: File = new File([e.data], "audio.mp4")
                 const fileReader: FileReader = new FileReader()
                 fileReader.readAsDataURL(file)
 
@@ -97,8 +101,10 @@ const FormSendMessage: FC<FormSendMessageProps> = ({handleSubmit, fetchSendMessa
                     console.log(response)
                     fetchSendMessage("", [response.data._id])
                 };
-
             }
+
+            recorder.onstop = () => stream.getTracks()[0].stop()
+
         } catch (e) {
             console.log(e)
         }
@@ -106,7 +112,7 @@ const FormSendMessage: FC<FormSendMessageProps> = ({handleSubmit, fetchSendMessa
 
     const handleInput = (e: ChangeEvent<HTMLDivElement>): void => {
         setValue(refDiv.current!.innerHTML)
-        //socket?.emit("dialog:typing")
+        socket?.emit("dialog:typing")
     }
 
     const handleClickEmoji = (emoji: BaseEmoji, event: React.MouseEvent<HTMLElement>) => {

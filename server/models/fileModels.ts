@@ -7,14 +7,16 @@ export interface IFile extends mongoose.Document{
     size: number,
     user: IUser | string,
     url: string,
-    ext: string
+    ext: string,
+    duration?: number
 }
 
 export const FileScheme = new Schema<IFile>({
     size: {type: Number, required: true},
     user: {type: Schema.Types.ObjectId, ref: "User", required: true},
     url: {type: String, required: true},
-    ext: {type: String, required: true}
+    ext: {type: String, required: true},
+    duration: {type: Number}
 })
 
 export default mongoose.model<IFile>("File", FileScheme)

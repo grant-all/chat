@@ -18,12 +18,16 @@ class FileService {
         await cloudinary.v2.uploader.upload(file, {resource_type: "auto"}, async (error: cloudinary.UploadApiErrorResponse, result: cloudinary.UploadApiResponse) => {
             if (error)
                 throw new Error("Произошла ошибка при загрузке файлов")
-            const fileData: Pick<IFile, "size" | "ext" | "url" | "user"> = {
+
+                
+            const fileData: Pick<IFile, "size" | "ext" | "url" | "user" | "duration">  = {
                 size: result.bytes,
                 ext: result.format,
                 url: result.url,
-                user: userId
+                user: userId 
             }
+
+            result.duration && (fileData.duration = result.duration)
             
             const uploadFile: IFile = await fileModels.create(fileData)
             console.log(uploadFile)

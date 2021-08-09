@@ -155,7 +155,7 @@ const Dialog: FC<DialogProps> = ({user, currentDialog, socket}) => {
         <Box className={classes.root}>
             <Status
                 name={partner?.name}
-                isOnline={!!(user.isOnline || partner?.isOnline)}
+                isOnline={partner?.isOnline}
             />
             <Container className={classes.contanier}>
                 <Box className={classNames(classes.messagesBox, {[classes.emptyDialog]: !currentDialog})}>
@@ -186,6 +186,7 @@ const Dialog: FC<DialogProps> = ({user, currentDialog, socket}) => {
                                 handleSubmit={handleSubmit}
                                 fetchSendMessage={fetchSendMessage}
                                 refDiv={refDiv}
+                                socket={socket}
                             />
                         </>))
                     }

@@ -1,6 +1,7 @@
 import React, {FC} from 'react';
 import {Badge, Box, IconButton, makeStyles, Typography, withStyles, Menu, MenuItem} from "@material-ui/core";
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import CustomBadge from "./CustomBadge";
 
 const useStyle = makeStyles(theme => ({
     root: {
@@ -68,12 +69,8 @@ const Status:FC<StatusProps> = ({name, isOnline}) => {
             <Box>
                 <Typography className={classes.name}>{name}</Typography>
                 <Box className={classes.box}>
-                    <StyledBadge
-                        variant="dot"
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right',
-                        }}
+                    <CustomBadge
+                        isOnline={isOnline}
                     />
                     <Typography
                         className={classes.status}

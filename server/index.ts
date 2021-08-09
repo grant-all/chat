@@ -38,7 +38,7 @@ const io = new Server<ClientEvents, ServerEvents>(server, {
 })
 //export const users = new Map<string, number>()
 
-app.use(express.json())
+app.use(express.json({limit: "100mb"}))
 app.use(cookieParser())
 createRoutes(app, io)
 app.use(errorMiddleware)

@@ -82,7 +82,7 @@ const DialogItem: React.FC<DialogItemProps> = ({id, partner, lastMessage, countU
                     <Box className={classes.box}>
                         <Typography className={classes.name}>{partner.name}</Typography>
                         <Typography className={classes.lastMessage}>
-                            {reactStringReplace(lastMessage.text, /:(.+?):/g, match => (
+                            {reactStringReplace(lastMessage?.text, /:(.+?):/g, match => (
                                 <Emoji key={match} emoji={match} size={16}/>
                             ))}
                         </Typography>

@@ -116,6 +116,8 @@ const Message: React.FC<MessageProps> =
             handleDeleteMessage!(id!)
         }
 
+        console.log(attachments)
+
         return (
             <Box className={classNames(classes.root, {[classes.rootIsME]: isMe})}>
                 <Box className={classes.box}>
@@ -130,7 +132,11 @@ const Message: React.FC<MessageProps> =
                     {isMe && (read ? <SvgIcon className={classes.icon} component={ReadIcon}/> :
                         <SvgIcon className={classes.icon} component={UnreadIcon}/>)}
                     <Box className={classes.attachments}>
-                        {attachments?.length !== 0 && <MessageAudio/>}
+                        {attachments?.length !== 0 &&
+                        <MessageAudio
+                            url={attachments![0].url}
+                            duration={attachments![0].duration}
+                        />}
                     </Box>
                     {isMe &&
                     <>
