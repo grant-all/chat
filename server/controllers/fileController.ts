@@ -7,12 +7,11 @@ class FileController {
     async create(req: express.Request, res:express.Response, next) {
         try {
             const userId: IUser = req.user._id;
-            const file = req.body.file
+            const file = req.file
             await fileService.create(userId, file, res)
         } catch (e) {
             next(e)
         }
-
     }
 }
 

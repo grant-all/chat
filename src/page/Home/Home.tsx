@@ -28,7 +28,7 @@ const Home = () => {
     const currentDialog:IDialog = useTypedSelector<IDialog>(({dialog}) => _.find(dialog.items, {_id: dialog.currentDialogId})!)
     const socket: Socket | null = useTypedSelector<Socket | null>(({socket}) => socket.socket)
     const location = useLocation()
-
+    
     useEffect(() => {
         fetchDialogs()
         setSocket(user._id)

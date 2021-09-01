@@ -9,6 +9,7 @@ export enum DialogActionTypes {
     FETCH_DIALOG_REMOVE = "FETCH_DIALOG_REMOVE",
     SET_READED_STATUS_LAST_MESSAGE = "SET_READED_STATUS_LAST_MESSAGE",
     DELETE_MESSAGE = "DELETE_MESSAGE",
+    CREATE_DIALOG = "CREATE_DIALOG"
 }
 
 export interface DialogState {
@@ -58,4 +59,16 @@ export interface DeleteMessageAction {
     }
 }
 
-export type DialogActions = fetchDialogs | fetchRemove | SetIsLoadingDialogAction | SetCurrentDialogAction | SetReadedStatusLastMessageAction | DeleteMessageAction | SetIsOnlineDialogAction
+export interface CreateDialogAction {
+    type: DialogActionTypes.CREATE_DIALOG,
+    payload: IDialog
+}
+
+export type DialogActions = fetchDialogs |
+    fetchRemove |
+    SetIsLoadingDialogAction |
+    SetCurrentDialogAction |
+    SetReadedStatusLastMessageAction |
+    DeleteMessageAction |
+    SetIsOnlineDialogAction |
+    CreateDialogAction

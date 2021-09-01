@@ -5,7 +5,7 @@ import useActions from "./hooks/useActions";
 import useTypedSelector from "./hooks/useTypedSelector";
 import {Box, makeStyles} from "@material-ui/core";
 import AlertDialog from "./components/AlertDialog";
-import {AlertDialogState} from "./redux/types/alertDialog";
+import CustomizedSnackbars from "./components/CustomizedSnackbars";
 
 const useStyle = makeStyles(theme => ({
     root: {
@@ -15,11 +15,10 @@ const useStyle = makeStyles(theme => ({
 
 function App() {
     const classes = useStyle()
-    const {initializeApp, closeAlertDialog} = useActions()
+    const {initializeApp, closeAlertDialog, closeAlert} = useActions()
     const initialized = useTypedSelector<boolean>(({app}) => app.initialized)
     const isAuth = useTypedSelector<boolean>(({user}) => user.isAuth)
     const routes = useRoute(isAuth, initialized)
-    const {open, text, title, handleAgree, data}: AlertDialogState = useTypedSelector<AlertDialogState>(({alertDialog}) => alertDialog)
 
     useEffect(() => {
         initializeApp()
@@ -29,13 +28,11 @@ function App() {
         <Box className={classes.root}>
             {routes}
             <AlertDialog
-                open={open}
-                title={title}
-                text={text}
-                handleAgree={handleAgree}
                 handleClose={closeAlertDialog}
-                data={data}
             />
+            <CustomizedSnackbars
+                handleClose={closeAlert}
+                />
         </Box>
     )
 }

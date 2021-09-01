@@ -5,13 +5,16 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {AlertDialogState, CloseAlertDialog} from "../redux/types/alertDialog";
+import {AlertDialogState} from "../redux/types/alertDialog";
+import useTypedSelector from "../hooks/useTypedSelector";
 
-interface AlertDialogProps extends AlertDialogState {
-    handleClose: () => CloseAlertDialog
+interface AlertDialogProps {
+    handleClose: () => void
 }
 
-const AlertDialog: FC<AlertDialogProps> = ({open, title, text, handleAgree, handleClose, data}) => {
+const AlertDialog: FC<AlertDialogProps> = ({handleClose}) => {
+    const {open, title, text, handleAgree, data}: AlertDialogState = useTypedSelector<AlertDialogState>(({alertDialog}) => alertDialog)
+
     const onAgree = () => {
         handleAgree!(data)
         handleClose()

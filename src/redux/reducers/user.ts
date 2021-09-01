@@ -21,3 +21,5 @@ export const userReducer = (state = initialState, action: UserActions) : UserSta
             return state
     }
 }
+
+export default userReducer

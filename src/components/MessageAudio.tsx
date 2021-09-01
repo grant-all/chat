@@ -1,10 +1,12 @@
-import React, {FC, useEffect, useRef, useState} from 'react';
+import React, {FC, MouseEventHandler, RefObject, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {Box, darken, duration, IconButton, lighten, makeStyles, Typography} from "@material-ui/core";
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 
 import wave from "../assets/img/wave.png"
 import classNames from "classnames";
+import Wave from "./Wave";
+import axios from "axios";
 
 const useStyle = makeStyles(theme => ({
     root: {
@@ -59,40 +61,109 @@ const useStyle = makeStyles(theme => ({
 interface MessageAudioProp {
     url: string;
     duration: number;
+    isLoading: boolean;
+    setIsLoading: (isLoading: boolean) => void;
 }
 
-const MessageAudio:FC<MessageAudioProp> = ({url, duration}) => {
+const MessageAudio: FC<MessageAudioProp> = ({url, duration, isLoading, setIsLoading}) => {
     const classes = useStyle()
     const refAudio = useRef<HTMLAudioElement | null>(null);
     const [isPlay, setIsPlay] = useState<boolean>(false)
     const [currentTime, setCurrentTime] = useState<number>(0)
     const refDiv = useRef<HTMLDivElement | null>(null)
+    const refSvg: RefObject<SVGSVGElement> = useRef<SVGSVGElement>(null)
+    const buckets: RefObject<number[]> = useRef([])
     const date = new Date(0)
-    date.setSeconds(Math.floor(currentTime))
 
+    date.setSeconds(Math.floor(currentTime))
 
     useEffect(() => {
         refAudio.current!.ontimeupdate = (e) => {
-            console.log(refAudio.current!.currentTime * 100 / duration)
             setCurrentTime(refAudio.current!.currentTime)
         }
+
         refAudio.current!.onended = () => {
-            setIsPlay(false)
             setCurrentTime(duration)
         }
-    }, []);
+    }, [isLoading]);
 
-    const handlePlay = () => {
-        setIsPlay(true)
-        setInterval(() => {
-            refDiv.current!.style.width = refAudio.current!.currentTime * 100 / duration + "%"
-        }, 10)
+    useEffect(() => {
+        const audioContext = new AudioContext()
+
+        const f = async () => {
+            const audioData: ArrayBuffer = (await axios(url, {responseType: "arraybuffer"})).data
+            const audioBuffer = await audioContext.decodeAudioData(audioData)
+            const nowBuffering = audioBuffer.getChannelData(0)
+
+            const COUNT_OF_LINE = 50;
+
+            let bucketDataSize = Math.floor(nowBuffering.length / COUNT_OF_LINE);
+
+            for (let i = 0; i < COUNT_OF_LINE; i++) {
+                const startingPoint = i * bucketDataSize;
+                const endingPoint = i * bucketDataSize + bucketDataSize;
+                const size = Math.abs(Math.max(...Array.from(nowBuffering.slice(startingPoint, endingPoint))));
+                buckets.current!.push(size / 2);
+            }
+
+            setIsLoading(false)
+        }
+
+        f()
+    }, [])
+
+    useEffect(() => {
+        if (isLoading) return
+
+        const SPACE_BETWEEN_BARS = 0.5;
+
+        refSvg.current!.innerHTML = buckets.current!.map((bucket, i) => {
+            const bucketSVGWidth = 100.0 / buckets.current!.length;
+            const bucketSVGHeight = bucket * 100.0;
+
+            return `<rect
+                            x=${bucketSVGWidth * i + SPACE_BETWEEN_BARS / 2.0}
+                            y=${(100 - bucketSVGHeight) / 2.0}
+                            width=${bucketSVGWidth - SPACE_BETWEEN_BARS}
+                            height=${bucketSVGHeight} />`;
+        }).join('');
+
+    }, [isLoading])
+
+    useEffect(() => {
+        if (isPlay) {
+            let requestId: number = 0;
+
+            const f = () => {
+                refDiv.current!.style.width = +refAudio.current!.currentTime.toFixed(2) * 100 / duration + "%"
+                if (parseFloat(refDiv.current!.style.width) < 100)
+                    requestId = requestAnimationFrame(f)
+                else {
+                    refDiv.current!.style.width = "100%"
+                    setCurrentTime(duration)
+                    setIsPlay(false)
+                }
+            }
+
+            requestAnimationFrame(f)
+            return () => cancelAnimationFrame(requestId)
+        }
+    }, [isPlay])
+
+    const handlePlay = (): void => {
         refAudio.current?.play()
+        setIsPlay(true)
     }
 
-    const handlePause = () => {
+    const handlePause = (): void => {
         refAudio.current?.pause()
         setIsPlay(false)
+    }
+
+    const handleRewind = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+        const svgElement: SVGSVGElement = (e.target as HTMLElement).closest("svg")!
+        const coords: DOMRect = svgElement.getBoundingClientRect()
+        refAudio.current!.currentTime = duration / coords.width * (e.pageX - coords.left)
     }
 
     return (
@@ -106,18 +177,22 @@ const MessageAudio:FC<MessageAudioProp> = ({url, duration}) => {
                     <PauseIcon className={classes.icon}/> :
                     <PlayCircleFilledIcon className={classes.icon}/>}
             </IconButton>
-            <img src={wave} className={classes.img}/>
+            <Wave
+                refSvg={refSvg}
+                handleRewind={handleRewind}
+            />
             <Typography className={classes.duration}>
                 {date.toISOString().slice(14, 19)}
             </Typography>
-            <audio ref={refAudio} src={url}></audio>
-            <div 
-                className={classes.progress} 
-                //style={{width: currentTime * 100 / duration + "%"}}
+            <audio ref={refAudio} src={url}/>
+            <div
+                className={classes.progress}
                 ref={refDiv}
             />
         </Box>
-    );
-};
+    )
+
+}
+
 
 export default MessageAudio;

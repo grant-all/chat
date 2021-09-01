@@ -7,9 +7,72 @@ import tokenService from "../service/tokenService";
 import UserDto from "../dto/userDto";
 import userModel from "../models/userModel";
 import ApiError from "../exceptions/apiError";
+import dialogModel from "../models/dialogModel";
 
 
 class UserService {
+    async searchNewUser(filter: string): Promise<IUser[]> {
+        const regex = new RegExp(`^${filter}.*`)
+
+        // return userModel.aggregate([
+        //     {
+        //         $lookup: {
+        //             from: "dialog",
+        //             localField: "_id",
+        //             foreignField: "",
+        //             as: "join"
+        //         }
+        //     },
+        //     {
+        //         $match: {
+        //             "join": {
+        //                 $size: 0
+        //             }
+        //         }
+        //     },
+        //     {
+        //         $project: {
+        //             join: 0
+        //         }
+        //     }
+        // ])
+
+        return dialogModel.aggregate([{
+            $lookup: {
+                from: "users",
+                let: {id: "$_id", author: "$author", partner: "$partner"},
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: {
+                                $and: [
+                                    {$not: {$in: ['$_id', ["$$author", "$$partner"]]}},
+                                    {
+                                        $or: [{
+                                            $regexFind: {
+                                                input: '$name',
+                                                regex
+                                            }
+                                        }, {$regexFind: {input: {$toString: '$_id'}, regex}}]
+                                    }
+                                ]
+                                // // $and: [
+                                // //     {$eq: ["$_id", "$$partner"]},
+                                // //     {$regexFind: {input: '$name', regex}}
+                                // // ]
+                                // $and: [
+                                //     {$eq: ["$_id", "$$author"]},
+                                //     {$regexFind: {input: '$name', regex}},
+                                // ]
+                            }
+                        }
+                    }
+                ],
+                as: "match"
+            },
+        }]) //find({$or: [{name: regex}, {_id: regex}]}).limit(10)
+    }
+
     async registration(name: string, email: string, password: string) {
         const candidate = await UserModel.findOne({email})
 
@@ -36,7 +99,7 @@ class UserService {
     async activate(activationLink: string) {
         const user: IUser = await userModel.findOne({activationLink})
 
-        if(!user) {
+        if (!user) {
             throw ApiError.BadRequest("Некорректная ссылка активации")
         }
 
@@ -47,13 +110,13 @@ class UserService {
     async login(email: string, password: string) {
         const user: IUser = await userModel.findOne({email})
 
-        if(!user) {
+        if (!user) {
             throw ApiError.BadRequest("Пользователь с таким email не найден")
         }
 
         const isPassEqual = await bcrypt.compare(password, user.password)
 
-        if(!isPassEqual) {
+        if (!isPassEqual) {
             throw ApiError.BadRequest("Неверный пароль")
         }
 
@@ -68,14 +131,14 @@ class UserService {
     }
 
     async refresh(refreshToken) {
-        if(!refreshToken) {
+        if (!refreshToken) {
             throw ApiError.UnauthoraizedError()
         }
 
         const userData = tokenService.validateRefreshToken(refreshToken)
         const tokenFromDb = await tokenService.findToken(refreshToken)
 
-        if(!userData || !tokenFromDb) {
+        if (!userData || !tokenFromDb) {
             throw ApiError.UnauthoraizedError()
         }
 

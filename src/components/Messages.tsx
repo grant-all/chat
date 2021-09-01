@@ -28,6 +28,8 @@ interface MessagesProps {
 const Messages: FC<MessagesProps> = ({user, items,  partner, isTyping, handleDeleteMessage}) => {
     const classes = useStyle()
 
+    console.log(items)
+
     return (
         <Box className={classes.root}>
             <Container>

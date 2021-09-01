@@ -4,6 +4,7 @@ import {Schema} from "mongoose";
 import * as mongoose from "mongoose";
 
 export interface IFile extends mongoose.Document{
+    name: string
     size: number,
     user: IUser | string,
     url: string,
@@ -12,6 +13,7 @@ export interface IFile extends mongoose.Document{
 }
 
 export const FileScheme = new Schema<IFile>({
+    name: {type: String, required: true},
     size: {type: Number, required: true},
     user: {type: Schema.Types.ObjectId, ref: "User", required: true},
     url: {type: String, required: true},

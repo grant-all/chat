@@ -31,6 +31,12 @@ class MessageController {
     async create(req: express.Request, res:express.Response, next: express.NextFunction):Promise<void> {
         try {
             const {dialogId, text, attachments}: {dialogId: string, text: string, attachments:string[]} = req.body
+
+            if(attachments?.length > 5) {
+                res.status(400).json("Вложение более 5 файлов не допутимо.")
+                return
+            }
+
             const userId: string = req.user._id
             await messageService.updateReadStatus(userId, dialogId)
             const message: IMessage = await messageService.create(userId, dialogId, text, attachments)

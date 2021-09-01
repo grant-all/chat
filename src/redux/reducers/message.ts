@@ -45,3 +45,5 @@ export const messageReducer = (state = initialState, action: MessageActions): Me
             return state
     }
 }
+
+export default messageReducer

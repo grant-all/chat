@@ -75,3 +75,5 @@ export const dialogReducer = (state = initialState, action: DialogActions | Mess
             return state
     }
 }
+
+export default dialogReducer

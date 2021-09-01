@@ -70,7 +70,8 @@ const Dialog: FC<DialogProps> = ({user, currentDialog, socket}) => {
         setReadedStatusLastMessages,
         setReadedStatusLastMessage,
         setAlertDialog,
-        setIsOnline
+        setIsOnline,
+        setAlert
     } = useActions()
     const isLoading: boolean = useTypedSelector<boolean>(({message}) => message.isLoading)
     const items: IMessage[] = useTypedSelector<IMessage[]>(({message}) => message.items)
@@ -132,14 +133,6 @@ const Dialog: FC<DialogProps> = ({user, currentDialog, socket}) => {
         })
     }
 
-    const handleSubmit = (e: SyntheticEvent): void => {
-        e.preventDefault()
-        fetchSendMessage(refDiv.current?.innerHTML.replace(/<img .+? alt="(.+?)".+?>/g, (match, p) => (
-            p
-        ))!);
-        refDiv.current!.innerText = ""
-    }
-
     const toggleIsTyping = () => {
         setIsTyping(true)
         if (typeof typingTimeoutId === "number") {
@@ -183,10 +176,10 @@ const Dialog: FC<DialogProps> = ({user, currentDialog, socket}) => {
                                 handleDeleteMessage={handleDeleteMessage}
                             />
                             <FormSendMessage
-                                handleSubmit={handleSubmit}
                                 fetchSendMessage={fetchSendMessage}
                                 refDiv={refDiv}
                                 socket={socket}
+                                setAlert={setAlert}
                             />
                         </>))
                     }

@@ -1,6 +1,8 @@
 import messageModel, {IMessage} from "../models/messageModel";
 import dialogModel, {IDialog} from "../models/dialogModel";
 import {IFile} from "../models/fileModels";
+import fileService from "./fileService";
+import axios from "axios";
 
 class MessageService {
     async getMessages(dialogId) {
@@ -41,7 +43,7 @@ class MessageService {
 
     async delete(userId: string, messageId: string) {
         const message: IMessage = await messageModel.findById(messageId)
-            .populate("dialog")
+            .populate("dialog attachments",)
 
         if(!message) {
             throw new Error("Сообщение не найдено")
@@ -51,15 +53,20 @@ class MessageService {
             throw new Error("Нет прав для удаления")
         }
 
+        await Promise.all([(message.attachments as IFile[]).map(item => fileService.delete(item.name, item.ext))])
+
         const dialogId: string = message.dialog as string
+
         await message.remove()
-        console.log("Сообщение удалено")
+
         const dialog: IDialog = await dialogModel.findById(dialogId)
+
         if(!dialog)
             throw new Error("Диалог не найден")
 
         const lastMessage: IMessage = await messageModel.findOne({dialog: dialogId}, null, {sort: {createdAt: -1}})
         dialog.lastMessage = lastMessage ? lastMessage : null;
+
         await dialog.save()
 
         return message

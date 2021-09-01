@@ -9,6 +9,9 @@ import {
 import dialogAPI from '../../utils/api/dialogs'
 import {IMessage} from "../../models/IMessage";
 import {Socket} from "socket.io-client";
+import {IUser} from "../../models/IUser";
+import {IDialog} from "../../models/IDialog";
+import {AxiosResponse} from "axios";
 
 export const fetchDialogs = (): AppThunk<DialogActions> => {
     return async (dispatch) => {
@@ -31,6 +34,20 @@ export const fetchRemove = (dialogId: string): AppThunk<DialogActions> => {
             await dialogAPI.removeDialog(dialogId)
             dispatch({type: DialogActionTypes.FETCH_DIALOG_REMOVE, payload: dialogId})
         } catch (e) {
+            console.log(e)
+            dispatch(setIsLoadingDialog(false))
+        }
+    }
+}
+
+export const fetchCreateDialog = (partner: string, text: string): AppThunk<DialogActions> => {
+    return async dispatch => {
+        try {
+            dispatch(setIsLoadingDialog(true))
+            const dialog: AxiosResponse<IDialog> = await dialogAPI.createDialog(partner, text)
+            dispatch({type: DialogActionTypes.CREATE_DIALOG, payload: dialog.data})
+        }
+        catch (e) {
             console.log(e)
             dispatch(setIsLoadingDialog(false))
         }

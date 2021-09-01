@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Avatar, Box, Icon, IconButton, makeStyles, Menu, MenuItem, SvgIcon, Typography} from "@material-ui/core";
 import classNames from "classnames";
 
@@ -10,6 +10,9 @@ import MessageAudio from "./MessageAudio";
 import {IFile} from "../models/IFile";
 import reactStringReplace from 'react-string-replace'
 import {Emoji} from 'emoji-mart'
+import Attachments from "./Attachments";
+import List from "./List";
+import AttachmentItem from "./AttachmentItem";
 
 const useStyle = makeStyles(theme => ({
     root: {
@@ -26,8 +29,7 @@ const useStyle = makeStyles(theme => ({
         marginBottom: "8px",
         alignItems: "center"
     },
-    avatar: {
-    },
+    avatar: {},
     message: {
         marginLeft: "13px",
         maxWidth: "400px",
@@ -72,6 +74,10 @@ const useStyle = makeStyles(theme => ({
         display: "flex",
         alignItems: "center",
         order: -1
+    },
+    list: {
+        display: "flex",
+        marginRight: "10px"
     }
 }))
 
@@ -102,6 +108,7 @@ const Message: React.FC<MessageProps> =
 
         const classes = useStyle()
         const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+        const [isLoading, setIsLoading] = useState<boolean>(true)
 
         const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
             setAnchorEl(event.currentTarget);
@@ -116,7 +123,18 @@ const Message: React.FC<MessageProps> =
             handleDeleteMessage!(id!)
         }
 
-        console.log(attachments)
+        const renderAttachment = (attachment: IFile[]) => {
+            console.log(attachment[0])
+            if (attachment[0].ext === "mp4")
+                return <MessageAudio
+                    url={attachments![0].url}
+                    duration={attachments![0].duration}
+                    isLoading={isLoading}
+                    setIsLoading={setIsLoading}
+                />
+
+            return <List items={attachment} renderItem={(item: IFile) => <AttachmentItem url={item.url}/>} />
+        }
 
         return (
             <Box className={classNames(classes.root, {[classes.rootIsME]: isMe})}>
@@ -132,11 +150,7 @@ const Message: React.FC<MessageProps> =
                     {isMe && (read ? <SvgIcon className={classes.icon} component={ReadIcon}/> :
                         <SvgIcon className={classes.icon} component={UnreadIcon}/>)}
                     <Box className={classes.attachments}>
-                        {attachments?.length !== 0 &&
-                        <MessageAudio
-                            url={attachments![0].url}
-                            duration={attachments![0].duration}
-                        />}
+                        {!!attachments?.length && renderAttachment(attachments)}
                     </Box>
                     {isMe &&
                     <>
@@ -164,7 +178,8 @@ const Message: React.FC<MessageProps> =
                     {date && <Time date={date}/>}
                 </Typography>
             </Box>
-        );
-    };
 
-export default Message;
+        );
+        };
+
+        export default Message;

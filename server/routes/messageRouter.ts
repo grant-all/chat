@@ -8,7 +8,7 @@ function createMessageRouter(io: Server): Router {
     const messageController: MessageController = new MessageController(io)
 
     messageRouter.get("/", authMiddleware, messageController.getMessages.bind(messageController))
-    messageRouter.post("/", authMiddleware, messageController.create.bind(messageController))
+    messageRouter.post("/", authMiddleware,  messageController.create.bind(messageController))
     messageRouter.delete("/:id", authMiddleware, messageController.delete.bind(messageController))
 
     return messageRouter

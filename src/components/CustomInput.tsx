@@ -1,6 +1,6 @@
-import React, { ChangeEvent, FC, FormEvent, FormEventHandler, useRef, useState } from 'react';
-import { Box, makeStyles, Typography } from "@material-ui/core"
-import { Emoji, EmojiData } from "emoji-mart";
+import React, {ChangeEvent, FC, FormEvent, FormEventHandler, useRef, useState} from 'react';
+import {Box, makeStyles, Typography} from "@material-ui/core"
+import {Emoji, EmojiData} from "emoji-mart";
 import reactStringReplace from "react-string-replace";
 
 const useStyle = makeStyles(theme => ({
@@ -35,7 +35,7 @@ interface CustomInputProps {
     handleInput: (e: ChangeEvent<HTMLDivElement>) => void
 }
 
-const CustomInput: FC<CustomInputProps> = ({ refDiv, handleInput }) => {
+const CustomInput: FC<CustomInputProps> = ({refDiv, handleInput}) => {
     const classes = useStyle()
     return (
         <Box className={classes.root}>
@@ -46,7 +46,7 @@ const CustomInput: FC<CustomInputProps> = ({ refDiv, handleInput }) => {
                 contentEditable={true}
                 suppressContentEditableWarning={true}
             />
-                {/* {reactStringReplace(value, /:(.+?):/g, (match, i) => (
+            {/* {reactStringReplace(value, /:(.+?):/g, (match, i) => (
                     <img
                         draggable={false} 
                         className={classes.img} 

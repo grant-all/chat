@@ -7,6 +7,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Dialogs from "./Dialogs";
 import {IUser} from "../models/IUser";
 import {IDialog} from "../models/IDialog";
+import CreateDialog from "./CreateDialog";
 
 const useStyle = makeStyles(theme => ({
     root: {
@@ -37,9 +38,6 @@ const useStyle = makeStyles(theme => ({
     },
     peopleIcon: {
         marginRight: "7px"
-    },
-    iconButton: {
-        padding: 0
     }
 }))
 
@@ -50,6 +48,10 @@ interface SidebarProps {
 const Sidebar: FC<SidebarProps> = ({user}) => {
     const classes = useStyle()
 
+    const handleCreateDialog = () => {
+
+    }
+
     return (
         <Box className={classes.root}>
             <Box className={classes.headerBox}>
@@ -59,9 +61,7 @@ const Sidebar: FC<SidebarProps> = ({user}) => {
                     <PeopleIcon className={classes.peopleIcon}/>
                     Список диалогов
                 </Typography>
-                <IconButton className={classes.iconButton}>
-                    <EditIcon/>
-                </IconButton>
+                <CreateDialog />
             </Box>
             <TextField
                 className={classes.textField}

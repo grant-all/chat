@@ -4,6 +4,7 @@ import {validationResult} from "express-validator";
 import userService from "../service/userService";
 import ApiError from "../exceptions/apiError";
 import {Server} from "socket.io";
+import {IUser} from "../models/userModel";
 
 class UserController {
     io: Server;
@@ -12,6 +13,24 @@ class UserController {
         this.io = io
     }
 
+    async searchNewUser(req: express.Request, res: express.Response, next): Promise<void> {
+        try {
+            const filters: string = req.query.name as string
+            const foundUsers = await userService.searchNewUser(filters)
+            console.log()
+            console.log()
+            console.log()
+            console.log()
+            console.log()
+            console.log()
+            console.log(foundUsers)
+            res.json(foundUsers)
+
+        } catch (e) {
+            console.log(e)
+            next(e)
+        }
+    }
 
     async registration(req: express.Request, res: express.Response, next) {
         try {

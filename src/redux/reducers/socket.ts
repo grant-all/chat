@@ -13,3 +13,5 @@ export const socketReducer = (state = initialState, action: SocketActions): Sock
             return state
     }
 }
+
+export default socketReducer
