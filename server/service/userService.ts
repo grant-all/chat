@@ -11,7 +11,7 @@ import dialogModel from "../models/dialogModel";
 
 
 class UserService {
-    async searchNewUser(filter: string): Promise<IUser[]> {
+    async searchNewUser(userId: string, filter: string): Promise<IUser[]> {
         const regex = new RegExp(`^${filter}.*`)
 
         // return userModel.aggregate([
@@ -37,10 +37,63 @@ class UserService {
         //     }
         // ])
 
-        return dialogModel.aggregate([{
+        console.log(userId)
+
+        // const searchedUsers = await dialogModel.aggregate([{
+        //     $match: {
+        //         $expr: {
+        //             $or: [
+        //                 {partner: userId},
+        //                 {author: userId},
+        //             ]
+        //         }
+        //     }
+        // },
+        //     {
+        //         $lookup: {
+        //             from: "users",
+        //             let: {id: "$_id", author: "$author", partner: "$partner"},
+        //             pipeline: [
+        //                 {
+        //                     $match: {
+        //                         $expr: {
+        //                             $and: [
+        //                                 {$not: {$in: ['$_id', ["$$author", "$$partner"]]}},
+        //                                 {
+        //                                     $or: [{
+        //                                         $regexFind: {
+        //                                             input: '$name',
+        //                                             regex
+        //                                         }
+        //                                     }, {$regexFind: {input: {$toString: '$_id'}, regex}}]
+        //                                 }
+        //                             ]
+        //                             // // $and: [
+        //                             // //     {$eq: ["$_id", "$$partner"]},
+        //                             // //     {$regexFind: {input: '$name', regex}}
+        //                             // // ]
+        //                             // $and: [
+        //                             //     {$eq: ["$_id", "$$author"]},
+        //                             //     {$regexFind: {input: '$name', regex}},
+        //                             // ]
+        //                         }
+        //                     }
+        //                 }
+        //             ],
+        //             as: "match",
+        //         },
+        //     },
+        //     {
+        //         $project: {
+        //             match: 1
+        //         }
+        //     }
+        // ])
+
+        const searchedUsers = await userModel.aggregate([{
             $lookup: {
-                from: "users",
-                let: {id: "$_id", author: "$author", partner: "$partner"},
+                from: "dialogs",
+                let: {id: "$_id"},
                 pipeline: [
                     {
                         $match: {
@@ -68,9 +121,19 @@ class UserService {
                         }
                     }
                 ],
-                as: "match"
+                as: "match",
             },
-        }]) //find({$or: [{name: regex}, {_id: regex}]}).limit(10)
+        },
+            {
+                $project: {
+                    match: 1
+                }
+            }
+        ])
+
+        console.log(searchedUsers)
+
+        return searchedUsers //find({$or: [{name: regex}, {_id: regex}]}).limit(10)
     }
 
     async registration(name: string, email: string, password: string) {

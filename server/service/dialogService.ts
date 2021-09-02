@@ -28,7 +28,9 @@ class DialogService {
             throw new Error("Такой диалог уже есть")
         }
 
-        const dialog = await dialogModel.create({...dataDialog})
+        const dialog = (await dialogModel.create({...dataDialog}))
+
+        await dialogModel.populate(dialog, {path: "author partner"})
 
         const message = await messageModel.create({
             text,
@@ -36,7 +38,7 @@ class DialogService {
             dialog: dialog._id
         })
 
-        dialog.lastMessage = message._id
+        dialog.lastMessage = message
 
         return dialog.save()
     }

@@ -16,14 +16,7 @@ class UserController {
     async searchNewUser(req: express.Request, res: express.Response, next): Promise<void> {
         try {
             const filters: string = req.query.name as string
-            const foundUsers = await userService.searchNewUser(filters)
-            console.log()
-            console.log()
-            console.log()
-            console.log()
-            console.log()
-            console.log()
-            console.log(foundUsers)
+            const foundUsers = await userService.searchNewUser(req.user._id, filters)
             res.json(foundUsers)
 
         } catch (e) {

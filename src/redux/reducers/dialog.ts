@@ -24,6 +24,13 @@ export const dialogReducer = (state = initialState, action: DialogActions | Mess
                 })
             }
 
+        case DialogActionTypes.CREATE_DIALOG:
+            return {
+                ...state,
+                items: [...state.items, action.payload],
+                isLoading: false
+            }
+
         case DialogActionTypes.FETCH_DIALOG_REMOVE:
             const newItems = state.items.filter(dialogObj => dialogObj._id !== action.payload)
             return {...state, items: newItems, isLoading: false}
