@@ -6,7 +6,7 @@ export enum DialogActionTypes {
     SET_CURRENT_DIALOG = "SET_CURRENT_DIALOG",
     SET_IS_ONLINE = "SET_IS_ONLINE",
     SET_IS_LOADING_DIALOG = "SET_IS_LOADING_DIALOG",
-    FETCH_DIALOG_REMOVE = "FETCH_DIALOG_REMOVE",
+    FETCH_DELETE_DIALOG = "FETCH_DELETE_DIALOG",
     SET_READED_STATUS_LAST_MESSAGE = "SET_READED_STATUS_LAST_MESSAGE",
     DELETE_MESSAGE = "DELETE_MESSAGE",
     CREATE_DIALOG = "CREATE_DIALOG"
@@ -23,8 +23,8 @@ export interface fetchDialogs {
     payload: IDialog[]
 }
 
-export interface fetchRemove {
-    type: DialogActionTypes.FETCH_DIALOG_REMOVE,
+export interface fetchDeleteDialog {
+    type: DialogActionTypes.FETCH_DELETE_DIALOG,
     payload: string
 }
 
@@ -65,7 +65,7 @@ export interface CreateDialogAction {
 }
 
 export type DialogActions = fetchDialogs |
-    fetchRemove |
+    fetchDeleteDialog |
     SetIsLoadingDialogAction |
     SetCurrentDialogAction |
     SetReadedStatusLastMessageAction |

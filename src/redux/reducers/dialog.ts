@@ -31,7 +31,7 @@ export const dialogReducer = (state = initialState, action: DialogActions | Mess
                 isLoading: false
             }
 
-        case DialogActionTypes.FETCH_DIALOG_REMOVE:
+        case DialogActionTypes.FETCH_DELETE_DIALOG:
             const newItems = state.items.filter(dialogObj => dialogObj._id !== action.payload)
             return {...state, items: newItems, isLoading: false}
 

@@ -3,16 +3,16 @@ import bcrypt from 'bcrypt'
 import {v4} from 'uuid'
 
 import MailService from './mailService'
-import tokenService from "../service/tokenService";
+import tokenService, {IToken} from "../service/tokenService";
 import UserDto from "../dto/userDto";
 import userModel from "../models/userModel";
 import ApiError from "../exceptions/apiError";
 import dialogModel from "../models/dialogModel";
-
+import * as mongoose from "mongoose";
 
 class UserService {
     async searchNewUser(userId: string, filter: string): Promise<IUser[]> {
-        const regex = new RegExp(`^${filter}.*`)
+        const regex = new RegExp(`^${filter.toLowerCase()}.*`)
 
         // return userModel.aggregate([
         //     {
@@ -98,17 +98,7 @@ class UserService {
                     {
                         $match: {
                             $expr: {
-                                $and: [
-                                    {$not: {$in: ['$_id', ["$$author", "$$partner"]]}},
-                                    {
-                                        $or: [{
-                                            $regexFind: {
-                                                input: '$name',
-                                                regex
-                                            }
-                                        }, {$regexFind: {input: {$toString: '$_id'}, regex}}]
-                                    }
-                                ]
+                                $in: ['$$id', ["$author", "$partner"]]
                                 // // $and: [
                                 // //     {$eq: ["$_id", "$$partner"]},
                                 // //     {$regexFind: {input: '$name', regex}}
@@ -121,13 +111,34 @@ class UserService {
                         }
                     }
                 ],
-                as: "match",
+                as: "matched_docs",
             },
         },
+            {$unwind: {path: "$matched_docs", preserveNullAndEmptyArrays: true}},
             {
-                $project: {
-                    match: 1
+                $match: {
+                    $expr:
+                        {
+                            $and:
+                                [
+                                    {$ne: ["$matched_docs.partner", {$toObjectId: userId}]},
+                                    {$ne: ["$matched_docs.author", {$toObjectId: userId}]},
+                                    {$ne: ["$_id", {$toObjectId: userId}]},
+                                    {
+                                        $or: [
+                                            {
+                                                $regexFind: {
+                                                    input: {$toLower: '$name'},
+                                                    regex
+                                                }
+                                            },
+                                            {$regexFind: {input: {$toLower: {$toString: '$_id'}}, regex}}]
+                                    }
+                                ]
+                        }
                 }
+                // $or: [{${}}]
+                // "matched_docs": {$or: [{$ne: [""]}]}
             }
         ])
 
@@ -150,7 +161,9 @@ class UserService {
         await MailService.sendActivationMail(email, `${process.env.API_URL}/users/activation/` + activationLink)
 
         const userDto = new UserDto(user)
-        const tokens = await tokenService.generateTokens({...userDto})
+        console.log("user: " + ( typeof user._id))
+        console.log("dto: " + ( typeof userDto._id))
+        const tokens:IToken = await tokenService.generateTokens({...userDto})
         await tokenService.saveToken(userDto._id, tokens.refreshToken)
 
         return {

@@ -2,6 +2,10 @@ import React, {FC} from 'react';
 import {Badge, Box, IconButton, makeStyles, Typography, withStyles, Menu, MenuItem} from "@material-ui/core";
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import CustomBadge from "./CustomBadge";
+import {AppThunk} from "../redux/store";
+import {DialogActions} from "../redux/types/dialog";
+import {fetchDeleteDialog} from "../redux/actions/dialog";
+import {IDialog} from "../models/IDialog";
 
 const useStyle = makeStyles(theme => ({
     root: {
@@ -48,20 +52,27 @@ const StyledBadge = withStyles((theme) => ({
 
 interface StatusProps {
     name: string,
-    isOnline: boolean
+    isOnline: boolean,
+    handleDeleteDialog: (dialogId: string) => AppThunk<DialogActions>
+    currentDialog: IDialog
 }
 
-const Status:FC<StatusProps> = ({name, isOnline}) => {
+const Status:FC<StatusProps> = ({name, isOnline, handleDeleteDialog, currentDialog}) => {
     const classes = useStyle()
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleClose = () => {
+    const handleClose = (): void => {
         setAnchorEl(null);
     };
+
+    const onDeleteDialog = (): void => {
+        handleClose()
+        handleDeleteDialog(currentDialog?._id)
+    }
 
 
     return (
@@ -93,7 +104,7 @@ const Status:FC<StatusProps> = ({name, isOnline}) => {
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
                 >
-                    <MenuItem onClick={handleClose}>Удалить диалог</MenuItem>
+                    <MenuItem onClick={onDeleteDialog}>Удалить диалог</MenuItem>
                 </Menu>
             </Box>
         </Box>

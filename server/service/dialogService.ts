@@ -1,5 +1,6 @@
-import dialogModel from "../models/dialogModel";
+import dialogModel, {IDialog} from "../models/dialogModel";
 import messageModel from "../models/messageModel";
+import {IUser} from "../models/userModel";
 
 
 class DialogService {
@@ -43,14 +44,19 @@ class DialogService {
         return dialog.save()
     }
 
-    async delete(id: string) {
-        const dialog = await dialogModel.findByIdAndDelete(id)
+    async delete(id: string, userId: string): Promise<IDialog> {
+        const dialog = await dialogModel.findById(id)
+
 
         if(!dialog) {
             throw new Error("Диалог не найден")
         }
 
-        return dialog
+        if((dialog.author as IUser)._id.toString() !== userId) {
+            throw new Error("Нет прав для удаления")
+        }
+
+        return dialog.remove()
     }
 
 

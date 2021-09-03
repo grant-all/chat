@@ -27,12 +27,12 @@ export const fetchDialogs = (): AppThunk<DialogActions> => {
 }
 
 
-export const fetchRemove = (dialogId: string): AppThunk<DialogActions> => {
+export const fetchDeleteDialog = (dialogId: string): AppThunk<DialogActions> => {
     return async (dispatch) => {
         try {
             dispatch(setIsLoadingDialog(true))
             await dialogAPI.removeDialog(dialogId)
-            dispatch({type: DialogActionTypes.FETCH_DIALOG_REMOVE, payload: dialogId})
+            dispatch({type: DialogActionTypes.FETCH_DELETE_DIALOG, payload: dialogId})
         } catch (e) {
             console.log(e)
             dispatch(setIsLoadingDialog(false))

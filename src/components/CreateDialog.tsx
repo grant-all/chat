@@ -9,17 +9,24 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import {Box, IconButton, makeStyles} from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import FormCreateDialog from "./FormCreateDialog";
+import useActions from "../hooks/useActions";
 
 const CreateDialog = () => {
     const [open, setOpen] = React.useState<boolean>(false);
+    const {fetchCreateDialog} = useActions()
 
-    const handleClickOpen = () => {
+    const handleClickOpen = (): void => {
         setOpen(true);
     };
 
-    const handleClose = () => {
+    const handleClose = (): void => {
         setOpen(false);
     };
+
+    const handleCreateDialog = (partnerId: string): void => {
+        fetchCreateDialog(partnerId, "Hello!")
+        setOpen(false)
+    }
 
     return (
         <Box>
@@ -34,16 +41,8 @@ const CreateDialog = () => {
                     <DialogContentText>
                         Введите имя пользователя для создания диалога
                     </DialogContentText>
-                    <FormCreateDialog />
+                    <FormCreateDialog handleCreateDialog={handleCreateDialog}/>
                 </DialogContent>
-                {/*<DialogActions>*/}
-                {/*    <Button onClick={handleClose} color="primary">*/}
-                {/*        Отмена*/}
-                {/*    </Button>*/}
-                {/*    <Button onClick={handleClose} color="primary">*/}
-                {/*        Создать диалог*/}
-                {/*    </Button>*/}
-                {/*</DialogActions>*/}
             </Dialog>
         </Box>
     );

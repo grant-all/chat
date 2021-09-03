@@ -37,7 +37,7 @@ interface FindUserProps {
     id: string,
     avatar: string,
     name: string,
-    handleCreateDialog: (partner: string, text: string) => AppThunk<DialogActions>
+    handleCreateDialog: (partner: string, text: string) => void
 }
 
 const FindUser: FC<FindUserProps> = ({id, avatar, name, handleCreateDialog}) => {

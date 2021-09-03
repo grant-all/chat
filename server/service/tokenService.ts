@@ -2,14 +2,15 @@ import jwt from 'jsonwebtoken'
 import tokenModel from "../models/tokenModel";
 import {IUser} from "../models/userModel";
 import UserDto from "../dto/userDto";
+import * as mongoose from "mongoose";
 
-interface ITokens {
+export interface IToken {
     accessToken: string,
     refreshToken: string
 }
 
 class TokenService {
-    async generateTokens(payload: Object): Promise<ITokens>{
+    async generateTokens(payload: UserDto): Promise<IToken>{
         const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: 60 * 15})
         const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {expiresIn: "30d"})
 
@@ -19,7 +20,7 @@ class TokenService {
         }
     }
 
-    async saveToken(userId: string, refreshToken: string) {
+    async saveToken(userId: mongoose.Types.ObjectId, refreshToken: string) {
         const tokenData = await tokenModel.findOne({userId})
 
         if(tokenData) {

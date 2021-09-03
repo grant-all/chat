@@ -67,6 +67,7 @@ const Dialog: FC<DialogProps> = ({user, currentDialog, socket}) => {
         fetchSendMessage,
         addMessage,
         fetchDeleteMessage,
+        fetchDeleteDialog,
         setReadedStatusLastMessages,
         setReadedStatusLastMessage,
         setAlertDialog,
@@ -149,6 +150,8 @@ const Dialog: FC<DialogProps> = ({user, currentDialog, socket}) => {
             <Status
                 name={partner?.name}
                 isOnline={partner?.isOnline}
+                handleDeleteDialog={fetchDeleteDialog}
+                currentDialog={currentDialog}
             />
             <Container className={classes.contanier}>
                 <Box className={classNames(classes.messagesBox, {[classes.emptyDialog]: !currentDialog})}>

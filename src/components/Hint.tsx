@@ -29,7 +29,7 @@ interface HintProps {
     loading: boolean
     foundUsers: IUser[],
     coords: { top: number, left: number, width: number },
-    handleCreateDialog: (partner: string, text: string) => AppThunk<DialogActions>
+    handleCreateDialog: (partner: string) => void
 
 }
 

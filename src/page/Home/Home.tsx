@@ -42,11 +42,16 @@ const Home = () => {
         setCurrentDialog(dialogId)
     }, [location.pathname])
 
+    const handleLogoutUser = () => {
+        socket?.disconnect()
+        fetchLogoutUser()
+    }
+
     return (
         isActivated ?
             (
                 socket && <Box className={classes.root}>
-                    <button onClick={() => fetchLogoutUser()}>dsadsa</button>
+                    <button onClick={handleLogoutUser}>dsadsa</button>
                     <Sidebar
                         user={user}
                     />

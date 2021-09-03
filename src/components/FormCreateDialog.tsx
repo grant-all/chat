@@ -1,16 +1,19 @@
-import React, {ChangeEvent, RefObject, useCallback, useEffect, useRef} from 'react';
+import React, {ChangeEvent, FC, RefObject, useCallback, useEffect, useRef} from 'react';
 import TextField from "@material-ui/core/TextField";
 import Hint from "./Hint";
 import {IUser} from "../models/IUser";
 import userApi from "../utils/api/user";
 import useActions from "../hooks/useActions";
 
-const FormCreateDialog = () => {
+interface FormCreateDialogProps {
+    handleCreateDialog: (partner: string) => void;
+}
+
+const FormCreateDialog: FC<FormCreateDialogProps> = ({handleCreateDialog}) => {
     const [value, setValue] = React.useState<string>("")
     const [foundUsers, setFoundUsers] = React.useState<IUser[]>([])
     const [coords, setCoords] = React.useState<{ top: number, left: number, width: number }>()
     const [loading, setLoading] = React.useState<boolean>(false)
-    const {fetchCreateDialog} = useActions()
     let el: Element;
 
     useEffect(() => {
@@ -51,10 +54,6 @@ const FormCreateDialog = () => {
         setFoundUsers(users)
     }
 
-
-    console.log(foundUsers)
-
-
     return (
         <>
             <TextField
@@ -66,7 +65,7 @@ const FormCreateDialog = () => {
                 value={value}
                 onChange={handleChange}
             />
-            {value && <Hint handleCreateDialog={fetchCreateDialog} loading={loading} foundUsers={foundUsers} coords={coords!}/>}
+            {value && <Hint handleCreateDialog={handleCreateDialog} loading={loading} foundUsers={foundUsers} coords={coords!}/>}
         </>
     )
 };

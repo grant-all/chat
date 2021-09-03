@@ -2,6 +2,7 @@ import express from "express";
 import ApiError from "../exceptions/apiError";
 import tokenService from "../service/tokenService";
 import {IUser} from "../models/userModel";
+import UserDto from "../dto/userDto";
 
 export default function (req: express.Request, res: express.Response, next) {
     try {
@@ -15,8 +16,9 @@ export default function (req: express.Request, res: express.Response, next) {
             return next(ApiError.UnauthoraizedError())
 
 
-        const userData = tokenService.validateAccessToken(accessToken) as IUser
+        const userData: UserDto = tokenService.validateAccessToken(accessToken) as UserDto
 
+        console.log("auth: " + typeof userData._id)
         if(!userData)
             return next(ApiError.UnauthoraizedError())
 

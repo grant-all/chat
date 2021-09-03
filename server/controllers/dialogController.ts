@@ -65,8 +65,9 @@ class DialogController {
     async delete(req: express.Request, res:express.Response, next) {
         try {
             const id: string = req.params.id
-            const dialog = await dialogService.delete(id)
-            return res.json("Диалог удален")
+            const dialog: IDialog = await dialogService.delete(id, req.user._id)
+
+            return res.json(dialog)
         } catch (e) {
             next(e)
         }
