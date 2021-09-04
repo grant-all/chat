@@ -14,22 +14,19 @@ const useStyle = makeStyles(theme => ({
 
 interface DialogsProps {
     user: IUser,
+    currentDialogId: string,
+    dialogs: IDialog[]
 }
 
-const Dialogs: FC<DialogsProps> = ({user}) => {
-    const currentDialogId = useTypedSelector<string>(({dialog}) => dialog.currentDialogId)
-    const dialogs = useTypedSelector<IDialog[]>(({dialog}) => dialog.items)
-    const isLoading = useTypedSelector<boolean>(({dialog}) => dialog.isLoading)
-
+const Dialogs: FC<DialogsProps> = ({user, currentDialogId, dialogs}) => {
     const handleSelectedDialogItem = (dialogId: string): void => {
 
     }
 
-    console.log(dialogs)
 
     return (
         <Box>
-            {!isLoading && dialogs.map((dialogObj: IDialog) => (
+            {dialogs.map((dialogObj: IDialog) => (
                 <DialogItem
                     key={dialogObj._id}
                     id={dialogObj._id}

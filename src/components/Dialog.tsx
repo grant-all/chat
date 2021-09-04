@@ -56,10 +56,11 @@ const useStyle = makeStyles(theme => ({
 interface DialogProps {
     user: IUser,
     currentDialog: IDialog,
-    socket: Socket | null
+    socket: Socket | null,
+    handleLogoutUser: () => void
 }
 
-const Dialog: FC<DialogProps> = ({user, currentDialog, socket}) => {
+const Dialog: FC<DialogProps> = ({user, currentDialog, socket, handleLogoutUser}) => {
     const classes = useStyle()
     const [isTyping, setIsTyping] = useState<boolean>(false)
     const {
@@ -152,6 +153,7 @@ const Dialog: FC<DialogProps> = ({user, currentDialog, socket}) => {
                 isOnline={partner?.isOnline}
                 handleDeleteDialog={fetchDeleteDialog}
                 currentDialog={currentDialog}
+                handleLogoutUser={handleLogoutUser}
             />
             <Container className={classes.contanier}>
                 <Box className={classNames(classes.messagesBox, {[classes.emptyDialog]: !currentDialog})}>

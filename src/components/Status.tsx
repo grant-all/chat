@@ -104,7 +104,9 @@ const Status:FC<StatusProps> = ({name, isOnline, handleDeleteDialog, currentDial
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
                 >
-                    <MenuItem onClick={onDeleteDialog}>Удалить диалог</MenuItem>
+                    <MenuItem>Добавить аватарку</MenuItem>
+                    <MenuItem onClick={handleClose}>Выйти из аккаунта</MenuItem>
+                    {currentDialog && <MenuItem onClick={onDeleteDialog}>Удалить диалог</MenuItem>}
                 </Menu>
             </Box>
         </Box>

@@ -42,7 +42,7 @@ const Home = () => {
         setCurrentDialog(dialogId)
     }, [location.pathname])
 
-    const handleLogoutUser = () => {
+    const handleLogoutUser = (): void => {
         socket?.disconnect()
         fetchLogoutUser()
     }
@@ -59,6 +59,7 @@ const Home = () => {
                         currentDialog={currentDialog}
                         user={user}
                         socket={socket}
+                        handleLogoutUser={handleLogoutUser}
                     />
                 </Box>
             )
