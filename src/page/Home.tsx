@@ -2,14 +2,14 @@ import React, {useEffect} from 'react';
 import {Box, makeStyles} from '@material-ui/core'
 import _ from 'lodash'
 
-import Sidebar from "../../components/Sidebar";
-import Dialog from "../../components/Dialog";
-import useActions from "../../hooks/useActions";
-import CheckEmailInfo from "../../components/CheckEmailInfo";
-import useTypedSelector from "../../hooks/useTypedSelector";
+import Sidebar from "../components/Sidebar";
+import Dialog from "../components/Dialog";
+import useActions from "../hooks/useActions";
+import CheckEmailInfo from "../components/CheckEmailInfo";
+import useTypedSelector from "../hooks/useTypedSelector";
 import {useLocation} from "react-router-dom";
-import {IUser} from "../../models/IUser";
-import {IDialog} from "../../models/IDialog";
+import {IUser} from "../models/IUser";
+import {IDialog} from "../models/IDialog";
 import {Socket} from "socket.io-client";
 
 
@@ -51,7 +51,6 @@ const Home = () => {
         isActivated ?
             (
                 socket && <Box className={classes.root}>
-                    <button onClick={handleLogoutUser}>dsadsa</button>
                     <Sidebar
                         user={user}
                     />

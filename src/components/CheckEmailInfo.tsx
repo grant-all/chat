@@ -4,7 +4,7 @@ import useTypedSelector from "../hooks/useTypedSelector";
 import {Box, Container, makeStyles, Paper, Typography} from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/Info";
 import {Redirect, useHistory} from "react-router-dom";
-import Home from "../page/Home/Home";
+import Home from "../page/Home";
 
 const useStyle = makeStyles(theme => ({
     root: {

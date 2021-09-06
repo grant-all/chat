@@ -53,11 +53,12 @@ const StyledBadge = withStyles((theme) => ({
 interface StatusProps {
     name: string,
     isOnline: boolean,
-    handleDeleteDialog: (dialogId: string) => AppThunk<DialogActions>
+    handleDeleteDialog: (dialogId: string) => AppThunk<DialogActions>,
+    handleLogoutUser: () => void
     currentDialog: IDialog
 }
 
-const Status:FC<StatusProps> = ({name, isOnline, handleDeleteDialog, currentDialog}) => {
+const Status:FC<StatusProps> = ({name, isOnline, handleDeleteDialog, currentDialog, handleLogoutUser}) => {
     const classes = useStyle()
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -72,6 +73,11 @@ const Status:FC<StatusProps> = ({name, isOnline, handleDeleteDialog, currentDial
     const onDeleteDialog = (): void => {
         handleClose()
         handleDeleteDialog(currentDialog?._id)
+    }
+
+    const onLogout = () => {
+        handleClose()
+        handleLogoutUser()
     }
 
 
@@ -104,8 +110,8 @@ const Status:FC<StatusProps> = ({name, isOnline, handleDeleteDialog, currentDial
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
                 >
-                    <MenuItem>Добавить аватарку</MenuItem>
-                    <MenuItem onClick={handleClose}>Выйти из аккаунта</MenuItem>
+                    <MenuItem>Мой профиль</MenuItem>
+                    <MenuItem onClick={onLogout}>Выйти из аккаунта</MenuItem>
                     {currentDialog && <MenuItem onClick={onDeleteDialog}>Удалить диалог</MenuItem>}
                 </Menu>
             </Box>

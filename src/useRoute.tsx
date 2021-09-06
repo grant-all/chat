@@ -2,7 +2,8 @@ import React from "react";
 import {Switch, Route, Redirect} from 'react-router-dom'
 import Registration from "./page/registration/contanier/Registration";
 import Login from "./page/Login";
-import Home from "./page/Home/Home";
+import Home from "./page/Home";
+import MyProfile from "./page/MyProfile";
 
 const useRoute = (isAuth: boolean, initialized: boolean) => {
     if(!initialized)
@@ -11,8 +12,11 @@ const useRoute = (isAuth: boolean, initialized: boolean) => {
     if (isAuth)
         return (
             <Switch>
-                <Route path={"/"}>
+                <Route exact path={"/"}>
                     <Home />
+                </Route>
+                <Route path={"/myProfile"}>
+                    <MyProfile />
                 </Route>
                 <Redirect to={"/"} />
             </Switch>
