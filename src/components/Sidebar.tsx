@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useState} from 'react';
-import {Box, IconButton, makeStyles, TextField, Typography} from "@material-ui/core";
+import {Avatar, Box, IconButton, makeStyles, TextField, Typography} from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
 import PeopleIcon from '@material-ui/icons/People';
 import SearchIcon from '@material-ui/icons/Search';
@@ -9,6 +9,11 @@ import {IUser} from "../models/IUser";
 import {IDialog} from "../models/IDialog";
 import CreateDialog from "./CreateDialog";
 import useTypedSelector from "../hooks/useTypedSelector";
+import MyProfile from "./MyProfile";
+import {AppThunk} from "../redux/store";
+import {UserActions} from "../redux/types/user";
+import {UpdateUserRequest} from "../models/request/UpdateUserRequest";
+import {fetchUpdateUser} from "../redux/actions/user";
 
 const useStyle = makeStyles(theme => ({
     root: {
@@ -44,9 +49,11 @@ const useStyle = makeStyles(theme => ({
 
 interface SidebarProps {
     user: IUser,
+    handleUpdateUser: (userData: UpdateUserRequest) => AppThunk<UserActions, void>
+
 }
 
-const Sidebar: FC<SidebarProps> = ({user}) => {
+const Sidebar: FC<SidebarProps> = ({user, handleUpdateUser}) => {
     const classes = useStyle()
     const currentDialogId = useTypedSelector<string>(({dialog}) => dialog.currentDialogId)
     const dialogs = useTypedSelector<IDialog[]>(({dialog}) => dialog.items)
@@ -72,8 +79,7 @@ const Sidebar: FC<SidebarProps> = ({user}) => {
                 <Typography
                     className={classes.headerBoxText}
                 >
-                    <PeopleIcon className={classes.peopleIcon}/>
-                    Список диалогов
+                    <MyProfile handleUpdateUser={handleUpdateUser}/>
                 </Typography>
                 <CreateDialog />
             </Box>

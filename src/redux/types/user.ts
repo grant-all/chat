@@ -1,5 +1,6 @@
 import {IUser} from "../../models/IUser";
 import {DialogActionTypes} from "./dialog";
+import {UpdateUserRequest} from "../../models/request/UpdateUserRequest";
 
 export enum UserActionTypes {
     SET_IS_LOADING_USER = "SET_IS_LOADING_USER",
@@ -8,6 +9,7 @@ export enum UserActionTypes {
     FETCH_USER_LOGIN = "FETCH_USERS_LOGIN",
     FETCH_USER_LOGOUT = "FETCH_USER_LOGOUT",
     FETCH_USER_IS_AUTH = "FETCH_USER_IS_AUTH",
+    FETCH_USER_UPDATE = "FETCH_USER_UPDATE"
 
 }
 
@@ -41,4 +43,14 @@ export interface FetchUserLogoutAction {
     type: UserActionTypes.FETCH_USER_LOGOUT,
 }
 
-export type UserActions = FetchUserLogoutAction | FetchIsAuthAction | FetchUserLoginAction | SetIsLoadingUserAction | FetchUserRegistrationAction;
+export interface FetchUserUpdate {
+    type:UserActionTypes.FETCH_USER_UPDATE,
+    payload: IUser
+}
+
+export type UserActions = FetchUserLogoutAction
+    | FetchIsAuthAction
+    | FetchUserLoginAction
+    | SetIsLoadingUserAction
+    | FetchUserRegistrationAction
+    | FetchUserUpdate;

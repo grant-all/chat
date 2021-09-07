@@ -11,7 +11,12 @@ function createUserRouter(io: Server): Router {
     userRouter.get(
         "/searchNewUser",
         authMiddleware,
-        userController.searchNewUser
+        userController.searchNewUsers
+    )
+    userRouter.patch(
+        "/",
+        authMiddleware,
+        userController.update
     )
     userRouter.post(
         "/registration",

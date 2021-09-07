@@ -17,6 +17,10 @@ export const userReducer = (state = initialState, action: UserActions) : UserSta
             return {user: {} as IUser, loading: false, isAuth: false}
         case UserActionTypes.FETCH_USER_IS_AUTH:
             return {user: action.payload, loading: false, isAuth: true}
+        case UserActionTypes.FETCH_USER_UPDATE:
+            console.log(action.payload.avatar)
+            console.log(action.payload === state.user)
+            return {...state, user: action.payload, loading: true}
         default:
             return state
     }

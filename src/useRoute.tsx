@@ -3,7 +3,7 @@ import {Switch, Route, Redirect} from 'react-router-dom'
 import Registration from "./page/registration/contanier/Registration";
 import Login from "./page/Login";
 import Home from "./page/Home";
-import MyProfile from "./page/MyProfile";
+import MyProfile from "./components/MyProfile";
 
 const useRoute = (isAuth: boolean, initialized: boolean) => {
     if(!initialized)
@@ -12,11 +12,8 @@ const useRoute = (isAuth: boolean, initialized: boolean) => {
     if (isAuth)
         return (
             <Switch>
-                <Route exact path={"/"}>
+                <Route path={"/"}>
                     <Home />
-                </Route>
-                <Route path={"/myProfile"}>
-                    <MyProfile />
                 </Route>
                 <Redirect to={"/"} />
             </Switch>

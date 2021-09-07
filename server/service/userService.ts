@@ -11,6 +11,10 @@ import dialogModel from "../models/dialogModel";
 import * as mongoose from "mongoose";
 
 class UserService {
+    async update(userId: string, userData: {name?: string, avatar?: string}): Promise<IUser> {
+        return userModel.findByIdAndUpdate(userId, {...userData}, {new: true})
+    }
+
     async searchNewUser(userId: string, filter: string): Promise<IUser[]> {
         const regex = new RegExp(`^${filter.toLowerCase()}.*`)
 

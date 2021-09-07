@@ -11,6 +11,7 @@ import {useLocation} from "react-router-dom";
 import {IUser} from "../models/IUser";
 import {IDialog} from "../models/IDialog";
 import {Socket} from "socket.io-client";
+import dialog from "../redux/reducers/dialog";
 
 
 const useStyle = makeStyles(theme => ({
@@ -22,7 +23,7 @@ const useStyle = makeStyles(theme => ({
 
 const Home = () => {
     const classes = useStyle()
-    const {fetchDialogs, fetchLogoutUser, setCurrentDialog, setSocket} = useActions()
+    const {fetchDialogs, fetchLogoutUser, setCurrentDialog, setSocket, fetchUpdateUser} = useActions()
     const user:IUser = useTypedSelector<IUser>(({user}) => user.user)
     const isActivated:boolean = useTypedSelector<boolean>(({user}) => user.user.isActivated)
     const currentDialog:IDialog = useTypedSelector<IDialog>(({dialog}) => _.find(dialog.items, {_id: dialog.currentDialogId})!)
@@ -36,7 +37,7 @@ const Home = () => {
 
     useEffect(() => {
         const dialogId: string | undefined = location.pathname.split("dialogs/")[1]
-
+        console.log( location.pathname)
         if(!dialogId) return
 
         setCurrentDialog(dialogId)
@@ -53,6 +54,7 @@ const Home = () => {
                 socket && <Box className={classes.root}>
                     <Sidebar
                         user={user}
+                        handleUpdateUser={fetchUpdateUser}
                     />
                     <Dialog
                         currentDialog={currentDialog}

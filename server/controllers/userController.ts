@@ -13,12 +13,23 @@ class UserController {
         this.io = io
     }
 
-    async searchNewUser(req: express.Request, res: express.Response, next): Promise<void> {
+    async searchNewUsers(req: express.Request, res: express.Response, next): Promise<void> {
         try {
             const filters: string = req.query.name as string
             const foundUsers = await userService.searchNewUser(req.user._id, filters)
             res.json(foundUsers)
 
+        } catch (e) {
+            console.log(e)
+            next(e)
+        }
+    }
+
+    async update(req: express.Request, res: express.Response, next): Promise<void> {
+        try {
+            const data: {name?: string, avatar?: string} = req.body
+            const userUpdate: IUser = await userService.update(req.user._id, data)
+            res.json(userUpdate)
         } catch (e) {
             console.log(e)
             next(e)

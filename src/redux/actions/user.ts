@@ -5,6 +5,9 @@ import {RegistrationRequest} from "../../models/request/RegistrationRequest";
 import {LoginRequest} from "../../models/request/LoginRequest";
 import {AppThunk} from "../store";
 import userAPI from '../../utils/api/user'
+import {UpdateUserRequest} from "../../models/request/UpdateUserRequest";
+import {IUser} from "../../models/IUser";
+import {AxiosResponse} from "axios";
 
 export const fetchRegistrationUser = (user: RegistrationRequest): AppThunk<UserActions> => {
     return async (dispatch) => {
@@ -13,6 +16,19 @@ export const fetchRegistrationUser = (user: RegistrationRequest): AppThunk<UserA
             const response = await userAPI.registration(user);
             localStorage.setItem("accessToken", response.data.accessToken);
             dispatch({type: UserActionTypes.FETCH_USER_REGISTRATION, payload: response.data.user})
+        } catch (e) {
+            console.log(e)
+            dispatch(setIsLoadingUser(false))
+        }
+    }
+}
+
+export const fetchUpdateUser = (userData: UpdateUserRequest): AppThunk<UserActions> => {
+    return async dispatch => {
+        try {
+            dispatch(setIsLoadingUser(true))
+            const response: AxiosResponse<IUser> = await userAPI.update(userData)
+            dispatch({type: UserActionTypes.FETCH_USER_UPDATE, payload: response.data})
         } catch (e) {
             console.log(e)
             dispatch(setIsLoadingUser(false))

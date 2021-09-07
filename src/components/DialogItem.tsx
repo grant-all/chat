@@ -59,7 +59,7 @@ const getMessageTime = (date: Date) => {
     if (isToday(new Date(date)) || isYesterday(new Date(date))) {
         return format(new Date(date), "HH:mm")
     }
-    console.log("Date" + date)
+
     return format(new Date(date), "dd.MM.yyyy")
 }
 
